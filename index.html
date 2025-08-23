@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Anime Portal</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      text-align: center;
+      color: #ff4500;
+      margin-bottom: 20px;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 25px;
+    }
+
+    .menu button {
+      background: #ff4500;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .menu button:hover {
+      background: #e63e00;
+      transform: scale(1.05);
+    }
+
+    .anime-card {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    .anime-card h2 {
+      margin: 0;
+      color: #333;
+    }
+
+    .anime-card p {
+      color: #666;
+    }
+
+    .anime-card button {
+      margin-top: 10px;
+      background: #0099ff;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .anime-card button:hover {
+      background: #007acc;
+    }
+
+    iframe {
+      width: 100%;
+      height: 250px;
+      border-radius: 12px;
+      border: none;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎬 Anime Portal</h1>
+
+    <div class="menu">
+      <button onclick="addAnime()">➕ Anime qo‘shish</button>
+      <button onclick="addSeries()">📥 Davom qo‘shish</button>
+      <button onclick="getLink()">🔗 Link olish</button>
+      <button onclick="showList()">📜 Ro‘yxat</button>
+    </div>
+
+    <div id="content">
+      <!-- Anime ro‘yxati shu yerda chiqadi -->
+      <div class="anime-card">
+        <h2>One Piece</h2>
+        <p>Kichik tavsif: Dengizchi Luffy sarguzashtlari</p>
+        <button onclick="playAnime('https://www.youtube.com/embed/LXb3EKWsInQ')">▶ Ko‘rish</button>
+        <div id="player"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function playAnime(link) {
+      document.getElementById("player").innerHTML = `
+        <iframe src="${link}" allowfullscreen></iframe>
+      `;
+    }
+
+    function addAnime() {
+      alert("Bu yerda yangi anime qo‘shish formasi bo‘ladi (keyin DB bilan bog‘laymiz).");
+    }
+
+    function addSeries() {
+      alert("Bu yerda mavjud anime-ga yangi seriyalar qo‘shish bo‘ladi.");
+    }
+
+    function getLink() {
+      alert("Bu yerda video kodini yozib, link olish mumkin bo‘ladi.");
+    }
+
+    function showList() {
+      alert("Anime ro‘yxati shu yerda chiqariladi (DB bilan).");
+    }
+  </script>
+</body>
+</html>
