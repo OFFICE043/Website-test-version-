@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AniLord TV - Anime Platformasi</title>
+    <title>AniLord TV - Аниме Платформасы</title>
     <meta name="description" content="Kuniga yangi anime tomosha qiling! Telegram bot orqali yuklab oling.">
     
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📺</text></svg>">
+    <!-- Supabase Client -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2.39.0/dist/supabase.js"></script>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -337,6 +337,70 @@
             box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
         }
         
+        /* Add Anime Form */
+        .add-anime-section {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .form-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2);
+        }
+        
+        .form-button {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: block;
+            width: 100%;
+            font-size: 1.1rem;
+        }
+        
+        .form-button:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+        
         /* Footer */
         footer {
             background: var(--secondary-color);
@@ -453,149 +517,44 @@
         </div>
     </section>
     
+    <!-- Add Anime Section -->
+    <section class="add-anime-section">
+        <h2 class="form-title">Аниме Қосу</h2>
+        <form id="anime-form">
+            <div class="form-group">
+                <label class="form-label">Аниме номи</label>
+                <input type="text" class="form-input" id="anime-title" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Түсіндірме</label>
+                <textarea class="form-input" id="anime-description" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Сурет URL</label>
+                <input type="url" class="form-input" id="anime-image" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Рейтинг (1-10)</label>
+                <input type="number" class="form-input" id="anime-rating" min="1" max="10" required>
+            </div>
+            
+            <button type="submit" class="form-button">Сақтау</button>
+        </form>
+    </section>
+    
     <!-- Trending Section -->
     <section class="section">
         <div class="section-header">
-            <h2 class="section-title">Trenddagi Anime</h2>
-            <a href="https://t.me/anilordtvbot?start=trending" class="section-link">
-                Hammasini ko'rish <i class="fas fa-chevron-right"></i>
+            <h2 class="section-title">Трендтеуші анимелер</h2>
+            <a href="#" class="section-link" id="view-all">
+                Барлығын қарау <i class="fas fa-chevron-right"></i>
             </a>
         </div>
-        <div class="anime-grid">
-            <!-- Sample Anime Cards -->
-            <div class="anime-card">
-                <img src="https://via.placeholder.com/220x300/0a0a1a/00ff88?text=Demon+Slayer" alt="Demon Slayer">
-                <div class="anime-info">
-                    <h3 class="anime-title">Demon Slayer: Kimetsu no Yaiba</h3>
-                    <div class="anime-meta">
-                        <span>Сезон 4</span>
-                        <span class="anime-rating"><i class="fas fa-star"></i> 9.5</span>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="window.location.href='https://t.me/anilordtvbot?start=1'">
-                    <i class="fas fa-download"></i> Yuklab olish
-                </button>
-            </div>
-            
-            <div class="anime-card">
-                <img src="https://via.placeholder.com/220x300/0a0a1a/00ff88?text=Attack+on+Titans" alt="Attack on Titans">
-                <div class="anime-info">
-                    <h3 class="anime-title">Attack on Titans</h3>
-                    <div class="anime-meta">
-                        <span>Сезон 4</span>
-                        <span class="anime-rating"><i class="fas fa-star"></i> 9.8</span>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="window.location.href='https://t.me/anilordtvbot?start=2'">
-                    <i class="fas fa-download"></i> Yuklab olish
-                </button>
-            </div>
-            
-            <div class="anime-card">
-                <img src="https://via.placeholder.com/220x300/0a0a1a/00ff88?text=My+Hero+Academia" alt="My Hero Academia">
-                <div class="anime-info">
-                    <h3 class="anime-title">My Hero Academia</h3>
-                    <div class="anime-meta">
-                        <span>Сезон 6</span>
-                        <span class="anime-rating"><i class="fas fa-star"></i> 9.2</span>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="window.location.href='https://t.me/anilordtvbot?start=3'">
-                    <i class="fas fa-download"></i> Yuklab olish
-                </button>
-            </div>
-            
-            <div class="anime-card">
-                <img src="https://via.placeholder.com/220x300/0a0a1a/00ff88?text=Jujutsu+Kaisen" alt="Jujutsu Kaisen">
-                <div class="anime-info">
-                    <h3 class="anime-title">Jujutsu Kaisen</h3>
-                    <div class="anime-meta">
-                        <span>Сезон 2</span>
-                        <span class="anime-rating"><i class="fas fa-star"></i> 9.6</span>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="window.location.href='https://t.me/anilordtvbot?start=4'">
-                    <i class="fas fa-download"></i> Yuklab olish
-                </button>
-            </div>
-        </div>
-    </section>
-    
-    <!-- New Episodes Section -->
-    <section class="section">
-        <div class="section-header">
-            <h2 class="section-title">Yangi Qismlar</h2>
-            <a href="https://t.me/anilordtvbot?start=episodes" class="section-link">
-                Hammasini ko'rish <i class="fas fa-chevron-right"></i>
-            </a>
-        </div>
-        <div class="anime-grid">
-            <!-- Sample New Episodes -->
-            <div class="anime-card">
-                <div style="position: absolute; top: 10px; right: 10px; background: var(--primary-color); color: var(--secondary-color); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold;">Yangi</div>
-                <img src="https://via.placeholder.com/220x300/0a0a1a/00ff88?text=Chainsaw+Man+Ep5" alt="Chainsaw Man">
-                <div class="anime-info">
-                    <h3 class="anime-title">Chainsaw Man - 5-Qism</h3>
-                    <div class="anime-meta">
-                        <span>23.08.2025</span>
-                        <span class="anime-rating"><i class="fas fa-eye"></i> 5.2K</span>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="window.location.href='https://t.me/anilordtvbot?start=5'">
-                    <i class="fas fa-download"></i> Yuklab olish
-                </button>
-            </div>
-            
-            <div class="anime-card">
-                <div style="position: absolute; top: 10px; right: 10px; background: var(--primary-color); color: var(--secondary-color); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold;">Yangi</div>
-                <img src="https://via.placeholder.com/220x300/0a0a1a/00ff88?text=Death+Note+Movie" alt="Death Note">
-                <div class="anime-info">
-                    <h3 class="anime-title">Death Note - Film</h3>
-                    <div class="anime-meta">
-                        <span>24.08.2025</span>
-                        <span class="anime-rating"><i class="fas fa-eye"></i> 7.1K</span>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="window.location.href='https://t.me/anilordtvbot?start=6'">
-                    <i class="fas fa-download"></i> Yuklab olish
-                </button>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Genres Section -->
-    <section class="section">
-        <div class="section-header">
-            <h2 class="section-title">Janrlar</h2>
-            <a href="https://t.me/anilordtvbot?start=genres" class="section-link">
-                Hammasini ko'rish <i class="fas fa-chevron-right"></i>
-            </a>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 0 20px; max-width: 1280px; margin: 0 auto;">
-            <!-- Genre Cards -->
-            <div style="background: var(--card-bg); border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s; cursor: pointer;">
-                <div style="font-size: 2rem; margin-bottom: 10px;">🔥</div>
-                <h3 style="font-weight: bold; margin-bottom: 5px;">Сёнен</h3>
-                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">24 тақырып</p>
-            </div>
-            
-            <div style="background: var(--card-bg); border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s; cursor: pointer;">
-                <div style="font-size: 2rem; margin-bottom: 10px;">🎭</div>
-                <h3 style="font-weight: bold; margin-bottom: 5px;">Романтика</h3>
-                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">27 тақырып</p>
-            </div>
-            
-            <div style="background: var(--card-bg); border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s; cursor: pointer;">
-                <div style="font-size: 2rem; margin-bottom: 10px;">🧠</div>
-                <h3 style="font-weight: bold; margin-bottom: 5px;">Психология</h3>
-                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">19 тақырып</p>
-            </div>
-            
-            <div style="background: var(--card-bg); border-radius: 10px; padding: 20px; text-align: center; transition: all 0.3s; cursor: pointer;">
-                <div style="font-size: 2rem; margin-bottom: 10px;">👻</div>
-                <h3 style="font-weight: bold; margin-bottom: 5px;">Тайны</h3>
-                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">22 тақырып</p>
-            </div>
+        <div class="anime-grid" id="anime-grid">
+            <!-- Anime cards will be dynamically added here -->
         </div>
     </section>
     
@@ -625,58 +584,140 @@
             
             <div class="footer-column">
                 <h3>Linklar</h3>
-                <ul style="list-style: none;">
-                    <li><a href="https://t.me/anilordtvbot?start=home" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">Asosiy sahifa</a></li>
-                    <li><a href="https://t.me/anilordtvbot?start=trending" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">Trenddagi anime</a></li>
-                    <li><a href="https://t.me/anilordtvbot?start=genres" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">Janrlar</a></li>
-                    <li><a href="https://t.me/anilordtv" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">Asosiy kanal</a></li>
+                <ul class="footer-links">
+                    <li><a href="https://t.me/anilordtvbot?start=home">Asosiy sahifa</a></li>
+                    <li><a href="https://t.me/anilordtvbot?start=trending">Trenddagi anime</a></li>
+                    <li><a href="https://t.me/anilordtvbot?start=genres">Janrlar</a></li>
+                    <li><a href="https://t.me/anilordtv">Asosiy kanal</a></li>
                 </ul>
             </div>
             
             <div class="footer-column">
                 <h3>Admin</h3>
-                <ul style="list-style: none;">
-                    <li><a href="https://t.me/darklordamw" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">Ega: @darklordamw</a></li>
-                    <li><a href="https://t.me/cryosky" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">Admin: @cryosky</a></li>
-                    <li><a href="https://t.me/anilordtvrek" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">Reklama: @anilordtvrek</a></li>
+                <ul class="footer-links">
+                    <li><a href="https://t.me/darklordamw">Ega: @darklordamw</a></li>
+                    <li><a href="https://t.me/cryosky">Admin: @cryosky</a></li>
+                    <li><a href="https://t.me/anilordtvrek">Reklama: @anilordtvrek</a></li>
                 </ul>
             </div>
             
             <div class="footer-column">
                 <h3>Til</h3>
-                <ul style="list-style: none;">
-                    <li><a href="#" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">O'zbekcha</a></li>
-                    <li><a href="#" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">Qaraqalpaqcha</a></li>
-                    <li><a href="#" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">Ruscha</a></li>
-                    <li><a href="#" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: all 0.3s;">Inglizcha</a></li>
+                <ul class="footer-links">
+                    <li><a href="#">O'zbekcha</a></li>
+                    <li><a href="#">Qaraqalpaqcha</a></li>
+                    <li><a href="#">Ruscha</a></li>
+                    <li><a href="#">Inglizcha</a></li>
                 </ul>
             </div>
         </div>
         
-        <div style="text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-top: 30px;">
+        <div class="footer-bottom">
             <p>&copy; 2025 AniLord TV. Barcha huquqlar himoyalangan. Faqat o'quv maqsadlarda.</p>
         </div>
     </footer>
     
     <script>
-        // Telegram botga o'tish funksiyasini qo'shish
-        document.addEventListener('DOMContentLoaded', function() {
-            // Barcha download buttonlarga click event listener qo'shish
-            document.querySelectorAll('.download-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    // Telegram botga o'tish
-                    console.log('Download button clicked');
+        // Supabase Client Setup
+        const SUPABASE_URL = 'https://aws-1-eu-central-1.pooler.supabase.com';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indzci0xLWV1LWNlbnRyYWwtMSIsInNhdiI6IjM0NTY3NTY3LTQ0ZDYtNGE0Ny1iOGY0LWIwNjM3OGM5NTM5NiIsIn存量是993GB，  3个月内的增长  每月增长多少？   Prisma Studio是一个允许查看和编辑数据库的桌面应用程序。它适用于PostgreSQL、MySQL、SQLite、SQL Server等数据库。';
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // DOM Elements
+        const animeForm = document.getElementById('anime-form');
+        const animeGrid = document.getElementById('anime-grid');
+        const viewAllBtn = document.getElementById('view-all');
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadAnimes();
+        });
+        
+        // Load all animes
+        async function loadAnimes() {
+            try {
+                const { data, error } = await supabase
+                    .from('animes')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                displayAnimes(data);
+            } catch (error) {
+                console.error('Error loading animes:', error);
+                alert('Анимелерді жүктеу кезінде қате пайда болды!');
+            }
+        }
+        
+        // Display animes in grid
+        function displayAnimes(animes) {
+            animeGrid.innerHTML = '';
+            
+            animes.forEach(anime => {
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                card.style.setProperty('--order', Math.floor(Math.random() * 10) + 1);
+                
+                card.innerHTML = `
+                    <div class="card-badge hot">Тренд</div>
+                    <img src="${anime.image_url}" alt="${anime.title}">
+                    <div class="anime-info">
+                        <h3 class="anime-title">${anime.title}</h3>
+                        <div class="anime-meta">
+                            <span>${anime.rating}/10</span>
+                            <span class="anime-rating"><i class="fas fa-star"></i> ${anime.rating}</span>
+                        </div>
+                        <div class="anime-genres">
+                            <span class="anime-genre">${anime.genres || 'Жанрлар'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    window.location.href = `https://t.me/anilordtvbot?start=${anime.id}`;
                 });
+                
+                animeGrid.appendChild(card);
             });
+        }
+        
+        // Handle form submission
+        animeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            // Header logo click event
-            document.querySelector('.logo').addEventListener('click', function() {
-                window.location.href = 'https://t.me/anilordtvbot?start=home';
-            });
+            const newAnime = {
+                title: document.getElementById('anime-title').value,
+                description: document.getElementById('anime-description').value,
+                image_url: document.getElementById('anime-image').value,
+                rating: parseInt(document.getElementById('anime-rating').value),
+                genres: 'Сёнен, Фэнтези', // Default genres
+                created_at: new Date().toISOString()
+            };
             
-            // Header search functionality (if needed)
-            // Add your search logic here
+            try {
+                const { error } = await supabase
+                    .from('animes')
+                    .insert([newAnime]);
+                
+                if (error) throw error;
+                
+                // Clear form and reload
+                animeForm.reset();
+                await loadAnimes();
+                
+                alert('Аниме сəтті қосылды!');
+            } catch (error) {
+                console.error('Error adding anime:', error);
+                alert('Аниме қосу кезінде қате пайда болды!');
+            }
+        });
+        
+        // View all button click
+        viewAllBtn.addEventListener('click', () => {
+            window.location.href = 'https://t.me/anilordtvbot?start=trending';
         });
     </script>
 </body>
-                            </html>
+</html>
