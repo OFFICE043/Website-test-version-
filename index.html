@@ -1,437 +1,478 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="az">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AniLord TV - Аниме Платформасы</title>
-    <meta name="description" content="Kuniga yangi anime tomosha qiling! Telegram bot orqali yuklab oling.">
-    
-    <!-- Supabase Client -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2.39.0/dist/supabase.js"></script>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+    <title>Anime İzlə - Sevimli Animelərinizi İzləyin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #00ff88;
-            --secondary-color: #0a0a1a;
-            --accent-color: #ff2e63;
-            --dark-bg: #050510;
-            --light-bg: #0f0f1a;
-            --text-color: #ffffff;
-            --card-bg: rgba(15, 15, 26, 0.8);
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff6b6b;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, var(--dark-bg), var(--light-bg));
-            color: var(--text-color);
-            min-height: 100vh;
-            font-family: 'Roboto', sans-serif;
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.05) 0%, transparent 60%),
-                repeating-linear-gradient(45deg, rgba(255, 46, 99, 0.03) 0px, rgba(255, 46, 99, 0.03) 1px, transparent 1px, transparent 10px);
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
         }
         
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
         
-        /* Header */
+        /* Header стильдері */
         header {
-            background: rgba(10, 10, 26, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 100;
         }
         
-        .header-container {
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            max-width: 1280px;
-            margin: 0 auto;
         }
         
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-        
-        .logo h1 {
-            font-size: 2rem;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
-        }
-        
-        .logo span {
-            color: var(--primary-color);
-            font-size: 1.4rem;
-            animation: pulse 2s infinite;
-        }
-        
-        /* Hero Section */
-        .hero {
-            height: 500px;
-            position: relative;
-            margin: 20px auto 40px;
-            border-radius: 20px;
-            overflow: hidden;
-            max-width: 1280px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-        
-        .hero-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 30px;
-            background: linear-gradient(transparent, rgba(10, 10, 26, 0.95));
-        }
-        
-        .hero-title {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        }
-        
-        .hero-genres {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .genre-tag {
-            background: rgba(0, 255, 136, 0.2);
-            color: var(--primary-color);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-        
-        .genre-tag:hover {
-            background: rgba(0, 255, 136, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        .hero-description {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            max-width: 600px;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.9);
-        }
-        
-        .hero-button {
-            background: var(--primary-color);
-            color: var(--secondary-color);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 30px;
-            cursor: pointer;
+            font-size: 24px;
             font-weight: bold;
-            transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 1.1rem;
         }
         
-        .hero-button:hover {
-            background: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 46, 99, 0.3);
+        .logo i {
+            margin-right: 10px;
+            font-size: 28px;
         }
         
-        /* Section Header */
-        .section-header {
+        nav ul {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 0 20px;
-            max-width: 1280px;
-            margin: 0 auto 20px;
+            list-style: none;
         }
         
-        .section-title {
-            font-size: 1.8rem;
-            color: var(--primary-color);
-            position: relative;
-            padding-left: 15px;
+        nav ul li {
+            margin-left: 20px;
         }
         
-        .section-title::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 5px;
-            height: 20px;
-            background: var(--primary-color);
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
             border-radius: 5px;
         }
         
-        .section-link {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: bold;
+        nav ul li a:hover, nav ul li a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffdd40;
+        }
+        
+        .user-actions {
             display: flex;
             align-items: center;
-            gap: 5px;
-            transition: all 0.3s;
+            gap: 15px;
         }
         
-        .section-link:hover {
-            text-decoration: underline;
-            transform: translateX(5px);
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 5px 15px;
         }
         
-        /* Anime Grid */
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px;
+            width: 180px;
+            outline: none;
+        }
+        
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        /* Hero бөлімі */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f8f9fa"/><path d="M0 0L100 100" stroke="%23e9ecef" stroke-width="1"/><path d="M100 0L0 100" stroke="%23e9ecef" stroke-width="1"/></svg>');
+            background-size: 30px;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #555;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Негізгі бөлім */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            padding: 40px 0;
+        }
+        
+        .sidebar {
+            flex: 0 0 250px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+        
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: var(--dark);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--light-gray);
+            color: var(--primary);
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .content {
+            flex: 1;
+        }
+        
+        .section-title {
+            margin-bottom: 30px;
+            color: var(--dark);
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .section-title a {
+            font-size: 16px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        /* Аниме карточкалары */
         .anime-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-            padding: 0 20px;
-            max-width: 1280px;
-            margin: 0 auto;
+            gap: 25px;
+            margin-bottom: 40px;
         }
         
         .anime-card {
-            background: var(--card-bg);
-            border-radius: 15px;
+            background: white;
+            border-radius: 10px;
             overflow: hidden;
-            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
             position: relative;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
         .anime-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
         
-        .anime-card::after {
-            content: '';
+        .anime-img {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .anime-status {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: var(--primary-color);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-        
-        .anime-card:hover::after {
-            transform: scaleX(1);
-        }
-        
-        .anime-card img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-        
-        .anime-card:hover img {
-            transform: scale(1.05);
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
         }
         
         .anime-info {
-            padding: 15px;
+            padding: 20px;
         }
         
-        .anime-title {
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .anime-info h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-size: 18px;
         }
         
         .anime-meta {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 10px;
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 15px;
         }
         
-        .anime-rating {
-            color: #ffc107;
-            font-weight: bold;
+        .progress-bar {
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 4px;
+        }
+        
+        .anime-actions {
             display: flex;
-            align-items: center;
-            gap: 3px;
+            justify-content: space-between;
+            margin-top: 15px;
         }
         
-        .download-btn {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 10px;
-            border-radius: 0 0 15px 15px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-        }
-        
-        .download-btn:hover {
-            background: #ff5a8a;
-            transform: translateY(-2px);
-        }
-        
-        /* Telegram Button */
-        .telegram-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #0088cc;
-            color: white;
+            background: var(--light-gray);
+            color: var(--dark);
             border: none;
-            padding: 15px 25px;
-            border-radius: 30px;
             cursor: pointer;
-            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Фильтр бөлімі */
+        .filters {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-row {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.3);
-            transition: all 0.3s;
-            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
         }
         
-        .telegram-btn:hover {
-            background: #00a3e0;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
         }
         
-        /* Add Anime Form */
-        .add-anime-section {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 30px;
-            background: var(--card-bg);
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .form-title {
-            font-size: 1.8rem;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-label {
+        .filter-group label {
             display: block;
             margin-bottom: 8px;
-            color: var(--text-color);
             font-weight: 500;
+            color: var(--dark);
         }
         
-        .form-input {
+        .filter-select {
             width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-color);
-            font-size: 1rem;
-            transition: all 0.3s;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid var(--light-gray);
+            background: white;
+            color: var(--dark);
         }
         
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2);
-        }
-        
-        .form-button {
-            background: var(--primary-color);
-            color: var(--secondary-color);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            display: block;
-            width: 100%;
-            font-size: 1.1rem;
-        }
-        
-        .form-button:hover {
-            background: var(--accent-color);
-            transform: translateY(-2px);
-        }
-        
-        /* Footer */
-        footer {
-            background: var(--secondary-color);
-            padding: 40px 20px 20px;
-            margin-top: 50px;
-        }
-        
-        .footer-container {
-            max-width: 1280px;
-            margin: 0 auto;
+        /* Статистика бөлімі */
+        .stats-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 20px;
+            color: white;
+        }
+        
+        .stat-icon.watching {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        .stat-icon.completed {
+            background: linear-gradient(135deg, var(--success) 0%, #20bf6b 100%);
+        }
+        
+        .stat-icon.planned {
+            background: linear-gradient(135deg, var(--warning) 0%, #f9b43b 100%);
+        }
+        
+        .stat-icon.dropped {
+            background: linear-gradient(135deg, var(--danger) 0%, #ff7a7a 100%);
+        }
+        
+        .stat-info h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .stat-info p {
+            color: var(--gray);
+        }
+        
+        /* Футер */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 50px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
+            margin-bottom: 40px;
         }
         
         .footer-column h3 {
-            color: var(--primary-color);
+            font-size: 18px;
             margin-bottom: 20px;
-            font-size: 1.2rem;
-            position: relative;
-            padding-bottom: 10px;
-        }
-        
-        .footer-column h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 2px;
-            background: var(--primary-color);
+            color: #ffdd40;
         }
         
         .footer-links {
@@ -439,285 +480,629 @@
         }
         
         .footer-links li {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         
         .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
+            color: #ddd;
             text-decoration: none;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
         
         .footer-links a:hover {
-            color: var(--primary-color);
+            color: #ffdd40;
             padding-left: 5px;
         }
         
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
+        .social-links {
+            display: flex;
+            gap: 15px;
             margin-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header-container {
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        /* Модальды терезе */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--danger);
+        }
+        
+        .modal-title {
+            margin-bottom: 20px;
+            color: var(--dark);
+            text-align: center;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 5px;
+            border: 1px solid var(--light-gray);
+            background: white;
+            color: var(--dark);
+            font-size: 16px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Адаптивтік дизайн */
+        @media (max-width: 992px) {
+            .main-content {
                 flex-direction: column;
-                gap: 15px;
-                padding: 10px;
             }
             
-            .hero {
-                height: 400px;
+            .sidebar {
+                flex: 1;
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
             }
             
-            .hero-title {
-                font-size: 1.8rem;
+            nav ul {
+                margin-top: 15px;
+                justify-content: center;
+                flex-wrap: wrap;
             }
             
-            .anime-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 15px;
+            nav ul li {
+                margin: 5px 10px;
             }
             
-            .anime-card img {
-                height: 220px;
+            .user-actions {
+                margin-top: 15px;
+                justify-content: center;
             }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .section-title {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .section-title a {
+                margin-top: 10px;
+            }
+        }
+        
+        /* Анимациялар */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        /* Күй көрсеткіші */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .status-watching {
+            background: var(--primary);
+        }
+        
+        .status-completed {
+            background: var(--success);
+        }
+        
+        .status-planned {
+            background: var(--warning);
+        }
+        
+        .status-dropped {
+            background: var(--danger);
+        }
+        
+        /* Жүктеу индикаторы */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            display: none;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-gray);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Хабарландырулар */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: none;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            display: flex;
+        }
+        
+        .notification.success {
+            background: var(--success);
+        }
+        
+        .notification.error {
+            background: var(--danger);
+        }
+        
+        .notification i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        /* Тіркелу/Кіру ауыстыру */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: all 0.3s ease;
+        }
+        
+        .auth-tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        /* Желілік күй */
+        .offline-mode {
+            background: var(--warning);
+            color: var(--dark);
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 100;
+            display: none;
         }
     </style>
 </head>
 <body>
     <!-- Header -->
     <header>
-        <div class="header-container">
-            <div class="logo">
-                <h1>AniLord</h1>
-                <span>📺</span>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-play-circle"></i>
+                    Anime İzlə
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active"><i class="fas fa-home"></i> Ana Səhifə</a></li>
+                        <li><a href="#"><i class="fas fa-list"></i> Animelər</a></li>
+                        <li><a href="#"><i class="fas fa-clock"></i> Son</a></li>
+                        <li><a href="#"><i class="fas fa-calendar"></i> Təqvim</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Axtarış...">
+                    </div>
+                    <div class="user-profile" id="userProfile">
+                        <div class="user-avatar">AA</div>
+                        <span>Anime Aşığı</span>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
-    
-    <!-- Hero Section -->
+
+    <!-- Hero бөлімі -->
     <section class="hero">
-        <img src="https://via.placeholder.com/1280x500/0a0a1a/00ff88?text=AniLord+TV" alt="AniLord TV" style="width: 100%; height: 100%; object-fit: cover;">
-        <div class="hero-content">
-            <h2 class="hero-title">Kuniga yangi anime tomosha qiling!</h2>
-            <div class="hero-genres">
-                <span class="genre-tag">Сёнен</span>
-                <span class="genre-tag">Супер кувват</span>
-                <span class="genre-tag">Жан-жакдорлик</span>
-            </div>
-            <p class="hero-description">Eng yangi va eng mashhur anime serial va filmalarni tomosha qiling. Telegram bot orqali bepul yuklab oling.</p>
-            <button class="hero-button" onclick="window.location.href='https://t.me/anilordtvbot?start=home'">
-                <i class="fab fa-telegram-plane"></i> Telegram Botga O'tish
-            </button>
+        <div class="container">
+            <h1>Sevimli Animelərinizi İzləyin</h1>
+            <p>Anime İzlə tətbiqi ilə izlədiyiniz animeləri qeyd edin, qiymətləndirin, yeni animelər kəşf edin və icma ilə əlaqə saxlayın.</p>
+            <a href="#" class="btn" id="registerBtn">Qeydiyyat</a>
+            <a href="#" class="btn btn-outline" style="margin-left: 15px;">Daha Ətraflı</a>
         </div>
     </section>
-    
-    <!-- Add Anime Section -->
-    <section class="add-anime-section">
-        <h2 class="form-title">Аниме Қосу</h2>
-        <form id="anime-form">
-            <div class="form-group">
-                <label class="form-label">Аниме номи</label>
-                <input type="text" class="form-input" id="anime-title" required>
-            </div>
+
+    <!-- Негізгі мазмұн -->
+    <div class="container main-content">
+        <!-- Сайдбар -->
+        <aside class="sidebar">
+            <h3>Siyahılarım</h3>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active"><i class="fas fa-eye"></i> İzləyirəm <span class="status-badge status-watching">12</span></a></li>
+                <li><a href="#"><i class="fas fa-check-circle"></i> Tamamlandı <span class="status-badge status-completed">45</span></a></li>
+                <li><a href="#"><i class="fas fa-bookmark"></i> Planlaşdırılıb <span class="status-badge status-planned">24</span></a></li>
+                <li><a href="#"><i class="fas fa-pause-circle"></i> Dayandırıldı <span class="status-badge status-dropped">3</span></a></li>
+                <li><a href="#"><i class="fas fa-star"></i> Seçilmiş</a></li>
+                <li><a href="#"><i class="fas fa-history"></i> Tarixçə</a></li>
+            </ul>
             
-            <div class="form-group">
-                <label class="form-label">Түсіндірме</label>
-                <textarea class="form-input" id="anime-description" rows="4" required></textarea>
+            <h3 style="margin-top: 30px;">Janrlar</h3>
+            <ul class="sidebar-menu">
+                <li><a href="#"><i class="fas fa-fighter-jet"></i> Döyüş</a></li>
+                <li><a href="#"><i class="fas fa-gem"></i> Fantaziya</a></li>
+                <li><a href="#"><i class="fas fa-heart"></i> Romantika</a></li>
+                <li><a href="#"><i class="fas fa-laugh"></i> Komediya</a></li>
+                <li><a href="#"><i class="fas fa-ghost"></i> Qorxu</a></li>
+                <li><a href="#"><i class="fas fa-rocket"></i> Elmi Fantastika</a></li>
+            </ul>
+        </aside>
+
+        <!-- Негізгі контент -->
+        <main class="content">
+            <!-- Статистика -->
+            <div class="stats-cards">
+                <div class="stat-card fade-in">
+                    <div class="stat-icon watching">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>12</h3>
+                        <p>İzləyirəm</p>
+                    </div>
+                </div>
+                <div class="stat-card fade-in">
+                    <div class="stat-icon completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>45</h3>
+                        <p>Tamamlandı</p>
+                    </div>
+                </div>
+                <div class="stat-card fade-in">
+                    <div class="stat-icon planned">
+                        <i class="fas fa-bookmark"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>24</h3>
+                        <p>Planlaşdırılıb</p>
+                    </div>
+                </div>
+                <div class="stat-card fade-in">
+                    <div class="stat-icon dropped">
+                        <i class="fas fa-pause-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>Dayandırıldı</p>
+                    </div>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label class="form-label">Сурет URL</label>
-                <input type="url" class="form-input" id="anime-image" required>
+
+            <!-- Фильтрлер -->
+            <div class="filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>Sırala</label>
+                        <select class="filter-select">
+                            <option>Ən Son Əlavə Edilən</option>
+                            <option>Ada Görə</option>
+                            <option>Ən Son Baxılan</option>
+                            <option>Ən Yüksək Qiymətli</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Janr</label>
+                        <select class="filter-select">
+                            <option>Bütün Janrlar</option>
+                            <option>Döyüş</option>
+                            <option>Fantaziya</option>
+                            <option>Romantika</option>
+                            <option>Komediya</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select class="filter-select">
+                            <option>Bütün Statuslar</option>
+                            <option>İzləyirəm</option>
+                            <option>Tamamlandı</option>
+                            <option>Planlaşdırılıb</option>
+                            <option>Dayandırıldı</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+
+            <!-- Анимелер тізімі -->
+            <h2 class="section-title">
+                Hal-hazırda İzləyirəm
+                <a href="#">Hamısına Bax <i class="fas fa-arrow-right"></i></a>
+            </h2>
             
-            <div class="form-group">
-                <label class="form-label">Рейтинг (1-10)</label>
-                <input type="number" class="form-input" id="anime-rating" min="1" max="10" required>
-            </div>
-            
-            <button type="submit" class="form-button">Сақтау</button>
-        </form>
-    </section>
-    
-    <!-- Trending Section -->
-    <section class="section">
-        <div class="section-header">
-            <h2 class="section-title">Трендтеуші анимелер</h2>
-            <a href="#" class="section-link" id="view-all">
-                Барлығын қарау <i class="fas fa-chevron-right"></i>
-            </a>
-        </div>
-        <div class="anime-grid" id="anime-grid">
-            <!-- Anime cards will be dynamically added here -->
-        </div>
-    </section>
-    
-    <!-- Telegram Button -->
-    <button class="telegram-btn" onclick="window.location.href='https://t.me/anilordtvbot'">
-        <i class="fab fa-telegram-plane"></i> Telegram Бот
-    </button>
-    
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-column">
-                <h3>AniLord TV</h3>
-                <p>Kuniga yangi anime tomosha qiling! Asosiy kanal: @anilordtv</p>
-                <div style="display: flex; gap: 15px; margin-top: 15px;">
-                    <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; transition: all 0.3s;">
-                        <i class="fab fa-telegram-plane"></i>
-                    </a>
-                    <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; transition: all 0.3s;">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; transition: all 0.3s;">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+            <div class="anime-grid">
+                <!-- Аниме карточкалары -->
+                <div class="anime-card fade-in">
+                    <div class="anime-img">
+                        Attack on Titan
+                        <span class="anime-status">Yeni Bölüm</span>
+                    </div>
+                    <div class="anime-info">
+                        <h3>Attack on Titan</h3>
+                        <div class="anime-meta">
+                            <span>25/32 böl.</span>
+                            <span>8.9 ★</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 78%;"></div>
+                        </div>
+                        <p>78% izlədim</p>
+                        <div class="anime-actions">
+                            <button class="action-btn"><i class="fas fa-play"></i></button>
+                            <button class="action-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn"><i class="fas fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="anime-card fade-in">
+                    <div class="anime-img">
+                        Demon Slayer
+                    </div>
+                    <div class="anime-info">
+                        <h3>Demon Slayer</h3>
+                        <div class="anime-meta">
+                            <span>12/26 böl.</span>
+                            <span>9.1 ★</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 46%;"></div>
+                        </div>
+                        <p>46% izlədim</p>
+                        <div class="anime-actions">
+                            <button class="action-btn"><i class="fas fa-play"></i></button>
+                            <button class="action-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn"><i class="fas fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="anime-card fade-in">
+                    <div class="anime-img">
+                        One Piece
+                        <span class="anime-status">Yeni Bölüm</span>
+                    </div>
+                    <div class="anime-info">
+                        <h3>One Piece</h3>
+                        <div class="anime-meta">
+                            <span>1045/?</span>
+                            <span>9.5 ★</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 65%;"></div>
+                        </div>
+                        <p>65% izlədim</p>
+                        <div class="anime-actions">
+                            <button class="action-btn"><i class="fas fa-play"></i></button>
+                            <button class="action-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn"><i class="fas fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="anime-card fade-in">
+                    <div class="anime-img">
+                        Jujutsu Kaisen
+                    </div>
+                    <div class="anime-info">
+                        <h3>Jujutsu Kaisen</h3>
+                        <div class="anime-meta">
+                            <span>18/24 böl.</span>
+                            <span>8.7 ★</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 75%;"></div>
+                        </div>
+                        <p>75% izlədim</p>
+                        <div class="anime-actions">
+                            <button class="action-btn"><i class="fas fa-play"></i></button>
+                            <button class="action-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn"><i class="fas fa-heart"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <div class="footer-column">
-                <h3>Linklar</h3>
-                <ul class="footer-links">
-                    <li><a href="https://t.me/anilordtvbot?start=home">Asosiy sahifa</a></li>
-                    <li><a href="https://t.me/anilordtvbot?start=trending">Trenddagi anime</a></li>
-                    <li><a href="https://t.me/anilordtvbot?start=genres">Janrlar</a></li>
-                    <li><a href="https://t.me/anilordtv">Asosiy kanal</a></li>
-                </ul>
-            </div>
+            <h2 class="section-title">
+                Son Əlavə Edilənlər
+                <a href="#">Hamısına Bax <i class="fas fa-arrow-right"></i></a>
+            </h2>
             
-            <div class="footer-column">
-                <h3>Admin</h3>
-                <ul class="footer-links">
-                    <li><a href="https://t.me/darklordamw">Ega: @darklordamw</a></li>
-                    <li><a href="https://t.me/cryosky">Admin: @cryosky</a></li>
-                    <li><a href="https://t.me/anilordtvrek">Reklama: @anilordtvrek</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-column">
-                <h3>Til</h3>
-                <ul class="footer-links">
-                    <li><a href="#">O'zbekcha</a></li>
-                    <li><a href="#">Qaraqalpaqcha</a></li>
-                    <li><a href="#">Ruscha</a></li>
-                    <li><a href="#">Inglizcha</a></li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2025 AniLord TV. Barcha huquqlar himoyalangan. Faqat o'quv maqsadlarda.</p>
-        </div>
-    </footer>
-    
-    <script>
-        // Supabase Client Setup
-        const SUPABASE_URL = 'https://aws-1-eu-central-1.pooler.supabase.com';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indzci0xLWV1LWNlbnRyYWwtMSIsInNhdiI6IjM0NTY3NTY3LTQ0ZDYtNGE0Ny1iOGY0LWIwNjM3OGM5NTM5NiIsIn存量是993GB，  3个月内的增长  每月增长多少？   Prisma Studio是一个允许查看和编辑数据库的桌面应用程序。它适用于PostgreSQL、MySQL、SQLite、SQL Server等数据库。';
-        
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        // DOM Elements
-        const animeForm = document.getElementById('anime-form');
-        const animeGrid = document.getElementById('anime-grid');
-        const viewAllBtn = document.getElementById('view-all');
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadAnimes();
-        });
-        
-        // Load all animes
-        async function loadAnimes() {
-            try {
-                const { data, error } = await supabase
-                    .from('animes')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                
-                if (error) throw error;
-                
-                displayAnimes(data);
-            } catch (error) {
-                console.error('Error loading animes:', error);
-                alert('Анимелерді жүктеу кезінде қате пайда болды!');
-            }
-        }
-        
-        // Display animes in grid
-        function displayAnimes(animes) {
-            animeGrid.innerHTML = '';
-            
-            animes.forEach(anime => {
-                const card = document.createElement('div');
-                card.className = 'anime-card';
-                card.style.setProperty('--order', Math.floor(Math.random() * 10) + 1);
-                
-                card.innerHTML = `
-                    <div class="card-badge hot">Тренд</div>
-                    <img src="${anime.image_url}" alt="${anime.title}">
+            <div class="anime-grid">
+                <div class="anime-card fade-in">
+                    <div class="anime-img">
+                        Spy x Family
+                    </div>
                     <div class="anime-info">
-                        <h3 class="anime-title">${anime.title}</h3>
+                        <h3>Spy x Family</h3>
                         <div class="anime-meta">
-                            <span>${anime.rating}/10</span>
-                            <span class="anime-rating"><i class="fas fa-star"></i> ${anime.rating}</span>
+                            <span>12/12 böl.</span>
+                            <span>8.8 ★</span>
                         </div>
-                        <div class="anime-genres">
-                            <span class="anime-genre">${anime.genres || 'Жанрлар'}</span>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 100%;"></div>
+                        </div>
+                        <p>100% izlədim</p>
+                        <div class="anime-actions">
+                            <button class="action-btn"><i class="fas fa-play"></i></button>
+                            <button class="action-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn"><i class="fas fa-heart"></i></button>
                         </div>
                     </div>
-                `;
+                </div>
                 
-                card.addEventListener('click', () => {
-                    window.location.href = `https://t.me/anilordtvbot?start=${anime.id}`;
-                });
+                <div class="anime-card fade-in">
+                    <div class="anime-img">
+                        Chainsaw Man
+                    </div>
+                    <div class="anime-info">
+                        <h3>Chainsaw Man</h3>
+                        <div class="anime-meta">
+                            <span>8/12 böl.</span>
+                            <span>9.0 ★</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 67%;"></div>
+                        </div>
+                        <p>67% izlədim</p>
+                        <div class="anime-actions">
+                            <button class="action-btn"><i class="fas fa-play"></i></button>
+                            <button class="action-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn"><i class="fas fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
                 
-                animeGrid.appendChild(card);
-            });
-        }
-        
-        // Handle form submission
-        animeForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const newAnime = {
-                title: document.getElementById('anime-title').value,
-                description: document.getElementById('anime-description').value,
-                image_url: document.getElementById('anime-image').value,
-                rating: parseInt(document.getElementById('anime-rating').value),
-                genres: 'Сёнен, Фэнтези', // Default genres
-                created_at: new Date().toISOString()
-            };
-            
-            try {
-                const { error } = await supabase
-                    .from('animes')
-                    .insert([newAnime]);
-                
-                if (error) throw error;
-                
-                // Clear form and reload
-                animeForm.reset();
-                await loadAnimes();
-                
-                alert('Аниме сəтті қосылды!');
-            } catch (error) {
-                console.error('Error adding anime:', error);
-                alert('Аниме қосу кезінде қате пайда болды!');
-            }
-        });
-        
-        // View all button click
-        viewAllBtn.addEventListener('click', () => {
-            window.location.href = 'https://t.me/anilordtvbot?start=trending';
-        });
-    </script>
-</body>
-</html>
+                <div class="anime-card fade-in">
+                    <div class="anime-img">
+                        Oshi no Ko
+                    </div>
+                    <div class="anime-info">
+                        <h3>Oshi no Ko</h3>
+                        <div class="anime-meta">
+                            <span>11/11 böl.</span>
+                            <span>9.2 ★</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 100%;"></div>
+                        </div>
+                        <p>100% izlədim</p>
+                        <div class="an
