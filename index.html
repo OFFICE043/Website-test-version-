@@ -2,141 +2,77 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <title>Anime Portal</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .container {
-      width: 90%;
-      max-width: 1000px;
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    }
-
-    h1 {
-      text-align: center;
-      color: #ff4500;
-      margin-bottom: 20px;
-    }
-
-    .menu {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 25px;
-    }
-
-    .menu button {
-      background: #ff4500;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .menu button:hover {
-      background: #e63e00;
-      transform: scale(1.05);
-    }
-
-    .anime-card {
-      background: #f5f5f5;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    }
-
-    .anime-card h2 {
-      margin: 0;
-      color: #333;
-    }
-
-    .anime-card p {
-      color: #666;
-    }
-
-    .anime-card button {
-      margin-top: 10px;
-      background: #0099ff;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .anime-card button:hover {
-      background: #007acc;
-    }
-
-    iframe {
-      width: 100%;
-      height: 250px;
-      border-radius: 12px;
-      border: none;
-      margin-top: 15px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animax Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="container">
-    <h1>🎬 Anime Portal</h1>
+<body class="bg-gray-950 text-white font-sans">
 
-    <div class="menu">
-      <button onclick="addAnime()">➕ Anime qo‘shish</button>
-      <button onclick="addSeries()">📥 Davom qo‘shish</button>
-      <button onclick="getLink()">🔗 Link olish</button>
-      <button onclick="showList()">📜 Ro‘yxat</button>
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center px-6 py-4 bg-gray-900 shadow-md">
+    <h1 class="text-2xl font-bold text-red-500">Animax</h1>
+    <input type="text" placeholder="🔍 Anime qidirish..." 
+           class="px-4 py-2 rounded-full bg-gray-800 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-red-500">
+  </nav>
+
+  <!-- Category Tabs -->
+  <div class="flex gap-3 px-6 py-4 overflow-x-auto text-sm">
+    <button class="px-4 py-2 bg-red-600 rounded-full">Barchasi</button>
+    <button class="px-4 py-2 bg-gray-800 rounded-full hover:bg-gray-700">Sarguzasht</button>
+    <button class="px-4 py-2 bg-gray-800 rounded-full hover:bg-gray-700">Jang</button>
+    <button class="px-4 py-2 bg-gray-800 rounded-full hover:bg-gray-700">Komediya</button>
+    <button class="px-4 py-2 bg-gray-800 rounded-full hover:bg-gray-700">Drama</button>
+  </div>
+
+  <!-- Anime Grid -->
+  <main class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 p-6">
+
+    <!-- Anime Card -->
+    <div class="bg-gray-900 rounded-2xl shadow hover:scale-105 transition cursor-pointer">
+      <img src="https://i.imgur.com/7NlcZxJ.jpg" class="rounded-t-2xl w-full h-48 object-cover">
+      <div class="p-3">
+        <h2 class="text-lg font-semibold">Naruto</h2>
+        <p class="text-xs text-gray-400">Sarguzasht / Jang</p>
+        <button onclick="openPlayer('https://www.youtube.com/embed/5RtQkdA2YJw')" 
+                class="mt-2 w-full bg-red-600 hover:bg-red-700 py-1.5 rounded-lg text-sm">
+          ▶ Tomosha qilish
+        </button>
+      </div>
     </div>
 
-    <div id="content">
-      <!-- Anime ro‘yxati shu yerda chiqadi -->
-      <div class="anime-card">
-        <h2>One Piece</h2>
-        <p>Kichik tavsif: Dengizchi Luffy sarguzashtlari</p>
-        <button onclick="playAnime('https://www.youtube.com/embed/LXb3EKWsInQ')">▶ Ko‘rish</button>
-        <div id="player"></div>
+    <!-- Another Anime -->
+    <div class="bg-gray-900 rounded-2xl shadow hover:scale-105 transition cursor-pointer">
+      <img src="https://i.imgur.com/ctt4H2N.jpg" class="rounded-t-2xl w-full h-48 object-cover">
+      <div class="p-3">
+        <h2 class="text-lg font-semibold">One Piece</h2>
+        <p class="text-xs text-gray-400">Dengizchi / Sarguzasht</p>
+        <button onclick="openPlayer('https://www.youtube.com/embed/Z5h4E0u4Q2k')" 
+                class="mt-2 w-full bg-red-600 hover:bg-red-700 py-1.5 rounded-lg text-sm">
+          ▶ Tomosha qilish
+        </button>
       </div>
+    </div>
+
+  </main>
+
+  <!-- Player Modal -->
+  <div id="playerModal" class="fixed inset-0 bg-black bg-opacity-90 hidden flex items-center justify-center z-50">
+    <div class="w-full max-w-3xl bg-gray-900 rounded-2xl p-4 relative">
+      <button onclick="closePlayer()" class="absolute top-2 right-2 text-white text-xl">✖</button>
+      <iframe id="videoFrame" class="w-full h-96 rounded-xl" src="" frameborder="0" allowfullscreen></iframe>
     </div>
   </div>
 
   <script>
-    function playAnime(link) {
-      document.getElementById("player").innerHTML = `
-        <iframe src="${link}" allowfullscreen></iframe>
-      `;
+    function openPlayer(url) {
+      document.getElementById("playerModal").classList.remove("hidden");
+      document.getElementById("videoFrame").src = url;
     }
-
-    function addAnime() {
-      alert("Bu yerda yangi anime qo‘shish formasi bo‘ladi (keyin DB bilan bog‘laymiz).");
-    }
-
-    function addSeries() {
-      alert("Bu yerda mavjud anime-ga yangi seriyalar qo‘shish bo‘ladi.");
-    }
-
-    function getLink() {
-      alert("Bu yerda video kodini yozib, link olish mumkin bo‘ladi.");
-    }
-
-    function showList() {
-      alert("Anime ro‘yxati shu yerda chiqariladi (DB bilan).");
+    function closePlayer() {
+      document.getElementById("playerModal").classList.add("hidden");
+      document.getElementById("videoFrame").src = "";
     }
   </script>
+
 </body>
 </html>
