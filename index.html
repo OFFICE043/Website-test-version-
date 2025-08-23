@@ -1,649 +1,57 @@
 <!DOCTYPE html>
-<html lang="kk">
+<html lang="kz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аниме Бахылау - Сүйікті анимелеріңізді бақылау қолыңызда</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>AniKaz - Қазақстандың №1 Аниме Платформасы</title>
+    <meta name="description" content="Қазақстандық аниме қосымшасы - жаңа сериалдар, тақырыптар, жанрлар мен түсіндірмелер">
+    
+    <!-- Фавикон -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎌</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
+        /* Негізгі стиль */
         :root {
-            --primary: #6a11cb;
-            --secondary: #2575fc;
-            --accent: #ff6b6b;
-            --light: #f8f9fa;
-            --dark: #2c3e50;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
+            --primary-color: #00ff88;
+            --secondary-color: #16213e;
+            --accent-color: #e94560;
+            --dark-bg: #1a1a2e;
+            --light-bg: #162447;
+            --text-color: #e6e6e6;
+            --hover-color: #ff8c42;
+            --modal-bg: rgba(26, 26, 46, 0.95);
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --input-border: rgba(0, 255, 136, 0.3);
+            --success-color: #4CAF50;
+            --error-color: #f44336;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header стильдері */
-        header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 15px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-content {
+            background: linear-gradient(135deg, var(--dark-bg), var(--light-bg));
+            color: var(--text-color);
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            font-family: 'Roboto', sans-serif;
         }
         
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-            font-size: 28px;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        nav ul li {
-            margin-left: 20px;
-        }
-        
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 8px 12px;
-            border-radius: 5px;
-        }
-        
-        nav ul li a:hover, nav ul li a.active {
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffdd40;
-        }
-        
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .search-box {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 5px 15px;
-        }
-        
-        .search-box input {
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 8px;
-            width: 180px;
-            outline: none;
-        }
-        
-        .search-box input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .user-profile {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            font-weight: bold;
-            color: var(--dark);
-        }
-        
-        /* Hero бөлімі */
-        .hero {
-            padding: 80px 0;
-            text-align: center;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f8f9fa"/><path d="M0 0L100 100" stroke="%23e9ecef" stroke-width="1"/><path d="M100 0L0 100" stroke="%23e9ecef" stroke-width="1"/></svg>');
-            background-size: 30px;
-        }
-        
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-        
-        .hero p {
-            font-size: 20px;
-            max-width: 800px;
-            margin: 0 auto 30px;
-            color: #555;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        
-        .btn:hover {
-            background: var(--secondary);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-        
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
-        /* Негізгі бөлім */
-        .main-content {
-            display: flex;
-            gap: 30px;
-            padding: 40px 0;
-        }
-        
-        .sidebar {
-            flex: 0 0 250px;
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            height: fit-content;
-        }
-        
-        .sidebar h3 {
-            margin-bottom: 20px;
-            color: var(--dark);
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--light-gray);
-        }
-        
-        .sidebar-menu {
-            list-style: none;
-        }
-        
-        .sidebar-menu li {
-            margin-bottom: 10px;
-        }
-        
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            color: var(--dark);
-            text-decoration: none;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-        
-        .sidebar-menu a:hover, .sidebar-menu a.active {
-            background: var(--light-gray);
-            color: var(--primary);
-        }
-        
-        .sidebar-menu i {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-        
-        .content {
-            flex: 1;
-        }
-        
-        .section-title {
-            margin-bottom: 30px;
-            color: var(--dark);
-            font-size: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .section-title a {
-            font-size: 16px;
-            color: var(--primary);
-            text-decoration: none;
-        }
-        
-        /* Аниме карточкалары */
-        .anime-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-        
-        .anime-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .anime-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .anime-img {
-            height: 200px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .anime-status {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--accent);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .anime-info {
-            padding: 20px;
-        }
-        
-        .anime-info h3 {
-            margin-bottom: 10px;
-            color: var(--dark);
-            font-size: 18px;
-        }
-        
-        .anime-meta {
-            display: flex;
-            justify-content: space-between;
-            color: var(--gray);
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background: var(--light-gray);
-            border-radius: 4px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-        
-        .progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 4px;
-        }
-        
-        .anime-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-        
-        .action-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--light-gray);
-            color: var(--dark);
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .action-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
-        /* Фильтр бөлімі */
-        .filters {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .filter-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .filter-group {
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .filter-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--dark);
-        }
-        
-        .filter-select {
-            width: 100%;
-            padding: 10px 15px;
-            border-radius: 5px;
-            border: 1px solid var(--light-gray);
-            background: white;
-            color: var(--dark);
-        }
-        
-        /* Статистика бөлімі */
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-        }
-        
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-right: 20px;
-            color: white;
-        }
-        
-        .stat-icon.watching {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        }
-        
-        .stat-icon.completed {
-            background: linear-gradient(135deg, var(--success) 0%, #20bf6b 100%);
-        }
-        
-        .stat-icon.planned {
-            background: linear-gradient(135deg, var(--warning) 0%, #f9b43b 100%);
-        }
-        
-        .stat-icon.dropped {
-            background: linear-gradient(135deg, var(--danger) 0%, #ff7a7a 100%);
-        }
-        
-        .stat-info h3 {
-            font-size: 28px;
-            margin-bottom: 5px;
-            color: var(--dark);
-        }
-        
-        .stat-info p {
-            color: var(--gray);
-        }
-        
-        /* Футер */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 50px 0 20px;
-            margin-top: 60px;
-        }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .footer-column h3 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #ffdd40;
-        }
-        
-        .footer-links {
-            list-style: none;
-        }
-        
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-        
-        .footer-links a {
-            color: #ddd;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        
-        .footer-links a:hover {
-            color: #ffdd40;
-            padding-left: 5px;
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .social-links a {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: all 0.3s ease;
-        }
-        
-        .social-links a:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
-        }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #aaa;
-            font-size: 14px;
-        }
-        
-        /* Модальды терезе */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-content {
-            background: white;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            color: var(--gray);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .close-modal:hover {
-            color: var(--danger);
-        }
-        
-        .modal-title {
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--dark);
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 5px;
-            border: 1px solid var(--light-gray);
-            background: white;
-            color: var(--dark);
-            font-size: 16px;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
-        }
-        
-        /* Адаптивтік дизайн */
-        @media (max-width: 992px) {
-            .main-content {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                flex: 1;
-                width: 100%;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            nav ul {
-                margin-top: 15px;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            
-            nav ul li {
-                margin: 5px 10px;
-            }
-            
-            .user-actions {
-                margin-top: 15px;
-                justify-content: center;
-            }
-            
-            .hero h1 {
-                font-size: 36px;
-            }
-            
-            .hero p {
-                font-size: 18px;
-            }
-            
-            .section-title {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .section-title a {
-                margin-top: 10px;
-            }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
         }
         
         /* Анимациялар */
@@ -652,402 +60,1524 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .fade-in {
-            animation: fadeIn 0.6s ease forwards;
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Күй көрсеткіші */
-        .status-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: white;
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px var(--primary-color); }
+            50% { box-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color); }
+            100% { box-shadow: 0 0 5px var(--primary-color); }
         }
         
-        .status-watching {
-            background: var(--primary);
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
         
-        .status-completed {
-            background: var(--success);
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
         }
         
-        .status-planned {
-            background: var(--warning);
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
         }
         
-        .status-dropped {
-            background: var(--danger);
+        /* Шешімдер */
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
         
-        /* Жүктеу индикаторы */
-        .loading {
+        .section {
+            margin: 40px 0;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        /* Жоғарғы тақырып */
+        header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            height: 200px;
+            padding: 15px 0;
         }
         
-        .spinner {
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        
+        .logo span {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Іздеу */
+        .search-container {
+            flex: 1;
+            margin: 0 30px;
+            position: relative;
+        }
+        
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 2px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+        
+        .search-button {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .search-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .search-button i {
+            font-size: 1.2rem;
+        }
+        
+        /* Навигация */
+        nav {
+            background: rgba(22, 33, 62, 0.8);
+            backdrop-filter: blur(5px);
+            position: sticky;
+            top: 80px;
+            z-index: 999;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-right: 25px;
+        }
+        
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a.active {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        .nav-links i {
+            font-size: 1.1rem;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
             width: 40px;
             height: 40px;
-            border: 4px solid var(--light-gray);
-            border-top: 4px solid var(--primary);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            border: 2px solid var(--primary-color);
+            transition: transform 0.3s;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .login-button {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .login-button:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+        
+        .login-button i {
+            font-size: 0.9rem;
+        }
+        
+        /* Негізгі мазмұны */
+        .main-content {
+            flex: 1;
+        }
+        
+        /* Басты бет */
+        .hero {
+            margin: 30px 0;
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 450px;
+            animation: fadeIn 1s ease-out;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero-slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        .hero-slide.active {
+            opacity: 1;
+        }
+        
+        .hero-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 1s ease-out 0.2s;
+            animation-fill-mode: both;
+        }
+        
+        .hero-genres {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            animation: fadeIn 1s ease-out 0.4s;
+            animation-fill-mode: both;
+        }
+        
+        .genre-tag {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .genre-tag:hover {
+            background: rgba(0, 255, 136, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .hero-description {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            max-width: 600px;
+            line-height: 1.5;
+            animation: fadeIn 1s ease-out 0.6s;
+            animation-fill-mode: both;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            animation: fadeIn 1s ease-out 0.8s;
+            animation-fill-mode: both;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+        }
+        
+        .btn-primary:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .hero-slider-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .hero-slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .hero-slider-dot.active {
+            background: var(--primary-color);
+            transform: scale(1.2);
+        }
+        
+        /* Соңғы жаңалықтар */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 5px;
+        }
+        
+        .section-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        
+        .section-link:hover {
+            text-decoration: underline;
+            transform: translateX(5px);
+        }
+        
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .anime-card {
+            background: rgba(22, 33, 62, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+            animation: fadeIn 0.6s ease-out;
+            animation-fill-mode: both;
+            animation-delay: calc(var(--order) * 0.1s);
+        }
+        
+        .anime-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .anime-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .anime-card:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .anime-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .anime-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        .anime-info {
+            padding: 15px;
+        }
+        
+        .anime-title {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .anime-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+        
+        .anime-rating {
+            color: #ffc107;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        .anime-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        
+        .anime-genre {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--primary-color);
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            transition: all 0.3s;
+        }
+        
+        .anime-genre:hover {
+            background: rgba(0, 255, 136, 0.3);
+        }
+        
+        .card-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 5;
+        }
+        
+        .card-badge.new {
+            background: var(--primary-color);
+        }
+        
+        .card-badge.hot {
+            background: var(--accent-color);
+        }
+        
+        .card-badge.featured {
+            background: #2196F3;
+        }
+        
+        /* Жаңа сериялар */
+        .episodes-section {
+            background: rgba(22, 33, 62, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 40px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .episodes-section .section-header {
+            margin-bottom: 15px;
+        }
+        
+        .episode-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .episode-item:last-child {
+            border-bottom: none;
+        }
+        
+        .episode-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .episode-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            transition: transform 0.3s;
+        }
+        
+        .episode-item:hover .episode-number {
+            transform: scale(1.1);
+        }
+        
+        .episode-info {
+            flex: 1;
+        }
+        
+        .episode-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .episode-meta {
+            display: flex;
+            gap: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .episode-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .episode-button {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--primary-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .episode-button:hover {
+            background: rgba(0, 255, 136, 0.3);
+            transform: translateX(5px);
+        }
+        
+        /* Категориялар */
+        .categories-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        
+        .category-card {
+            background: rgba(22, 33, 62, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out;
+            animation-fill-mode: both;
+            animation-delay: calc(var(--order) * 0.05s);
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-color);
+            opacity: 0.1;
+            transform: translateY(-100%);
+            transition: transform 0.3s;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .category-card:hover::before {
+            transform: translateY(0);
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .category-card:hover .category-icon {
+            transform: scale(1.2);
+        }
+        
+        .category-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .category-count {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Аяқталу */
+        footer {
+            background: var(--secondary-color);
+            padding: 40px 0 20px;
+            margin-top: auto;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--primary-color);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            display: block;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+        
+        .social-link:hover {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        /* Мобильды құрылдың */
+        @media (max-width: 992px) {
+            .anime-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 15px;
+            }
+            
+            .anime-card img {
+                height: 240px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-container {
+                margin: 10px 0;
+                width: 100%;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            .nav-links li {
+                margin: 5px;
+            }
+            
+            .hero {
+                height: 350px;
+            }
+            
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .anime-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+            
+            .anime-card img {
+                height: 220px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .nav-links {
+                font-size: 0.9rem;
+            }
+            
+            .hero {
+                height: 280px;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .anime-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            
+            .anime-card img {
+                height: 180px;
+            }
+            
+            .hero-slider-controls {
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+        
+        /* Modal түймесі */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--modal-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+        
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-header h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .form-input {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2);
+        }
+        
+        .form-input.error {
+            border-color: var(--error-color);
+            box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.2);
+        }
+        
+        .form-error {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+        
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .auth-button {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+        
+        .auth-button:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .auth-divider span {
+            padding: 0 10px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .social-auth {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-auth-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .social-auth-button:hover {
+            background: var(--primary-color);
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+        
+        .auth-switch a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+        
+        .success-message {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--success-color);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .error-message {
+            background: rgba(244, 67, 54, 0.2);
+            color: var(--error-color);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* User Profile */
+        .user-profile {
+            position: relative;
+        }
+        
+        .profile-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: var(--modal-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .profile-dropdown.active {
+            display: block;
+        }
+        
+        .profile-menu {
+            list-style: none;
+            padding: 10px 0;
+        }
+        
+        .profile-menu li {
+            padding: 0;
+        }
+        
+        .profile-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .profile-menu a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .profile-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .profile-menu .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 5px 0;
+        }
+        
+        .profile-menu .logout {
+            color: var(--accent-color);
+        }
+        
+        /* Loader */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            transition: opacity 0.5s;
+        }
+        
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loader-content {
+            text-align: center;
+        }
+        
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(0, 255, 136, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 20px;
         }
         
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
         }
     </style>
 </head>
 <body>
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <p>Анықтау...</p>
+        </div>
+    </div>
+    
     <!-- Header -->
     <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-play-circle"></i>
-                    Аниме Бахылау
-                </div>
-                <nav>
-                    <ul>
-                        <li><a href="#" class="active"><i class="fas fa-home"></i> Басты бет</a></li>
-                        <li><a href="#"><i class="fas fa-list"></i> Анимелер</a></li>
-                        <li><a href="#"><i class="fas fa-clock"></i> Жуырда</a></li>
-                        <li><a href="#"><i class="fas fa-calendar"></i> Күнтізбе</a></li>
-                    </ul>
-                </nav>
-                <div class="user-actions">
-                    <div class="search-box">
+        <div class="container header-container">
+            <div class="logo" id="logo">
+                <h1>AniKaz</h1>
+                <span>🎌</span>
+            </div>
+            
+            <div class="search-container">
+                <form class="search-form">
+                    <input type="text" class="search-input" placeholder="Аниме іздеу..." id="search-input">
+                    <button type="submit" class="search-button">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Іздеу...">
-                    </div>
-                    <div class="user-profile">
-                        <div class="user-avatar">АҚ</div>
-                        <span>Ақжол</span>
-                    </div>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="user-menu">
+                <button class="login-button" id="login-btn">Кіру / Тіркелу</button>
+                <div class="user-avatar" id="user-avatar" style="display: none;">
+                    <img src="https://via.placeholder.com/40" alt="User Avatar" id="user-avatar-img">
                 </div>
             </div>
         </div>
     </header>
-
-    <!-- Hero бөлімі -->
-    <section class="hero">
-        <div class="container">
-            <h1>Сүйікті анимелеріңізді бақылау қолыңызда</h1>
-            <p>Аниме Бахылау қосымшасы арқылы көрген анимелеріңізді тіркеп, бағалап, жаңа анимелерді тауып, қауымдастықпен бөлісіңіз.</p>
-            <a href="#" class="btn">Тіркелу</a>
-            <a href="#" class="btn btn-outline" style="margin-left: 15px;">Көбірек білу</a>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <ul class="nav-links">
+                <li><a href="#" class="active" data-page="home"><i class="fas fa-home"></i> Басты бет</a></li>
+                <li><a href="#" data-page="trending"><i class="fas fa-fire"></i> Трендтер</a></li>
+                <li><a href="#" data-page="series"><i class="fas fa-tv"></i> Сериалдар</a></li>
+                <li><a href="#" data-page="movies"><i class="fas fa-film"></i> Анимация</a></li>
+                <li><a href="#" data-page="new"><i class="fas fa-calendar-alt"></i> Жаңа түстелгендер</a></li>
+                <li><a href="#" data-page="top"><i class="fas fa-chart-line"></i> Рейтинг</a></li>
+            </ul>
+            
+            <div class="user-menu">
+                <button class="login-button" id="login-btn-2">Кіру</button>
+                <div class="user-avatar" id="user-avatar-2" style="display: none;">
+                    <img src="https://via.placeholder.com/40" alt="User Avatar" id="user-avatar-img-2">
+                </div>
+            </div>
         </div>
-    </section>
-
-    <!-- Негізгі мазмұн -->
-    <div class="container main-content">
-        <!-- Сайдбар -->
-        <aside class="sidebar">
-            <h3>Менің тізімдерім</h3>
-            <ul class="sidebar-menu">
-                <li><a href="#" class="active"><i class="fas fa-eye"></i> Қазір көріп жатырмым <span class="status-badge status-watching">12</span></a></li>
-                <li><a href="#"><i class="fas fa-check-circle"></i> Аяқталған <span class="status-badge status-completed">45</span></a></li>
-                <li><a href="#"><i class="fas fa-bookmark"></i> Кейін көрім <span class="status-badge status-planned">24</span></a></li>
-                <li><a href="#"><i class="fas fa-pause-circle"></i> Тоқтатылған <span class="status-badge status-dropped">3</span></a></li>
-                <li><a href="#"><i class="fas fa-star"></i> Таңдаулы</a></li>
-                <li><a href="#"><i class="fas fa-history"></i> Тарих</a></li>
-            </ul>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content container" id="main-content">
+        <!-- Home Page Content -->
+        <div id="home-page">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-slider">
+                    <div class="hero-slide active">
+                        <img src="https://via.placeholder.com/1280x450/1a1a2e/00ff88?text=Demon+Slayer" alt="Demon Slayer">
+                        <div class="hero-content">
+                            <h2 class="hero-title">А demon Slayer: Киметсу но Яйба</h2>
+                            <div class="hero-genres">
+                                <span class="genre-tag">Сёнен</span>
+                                <span class="genre-tag">Супер қуат</span>
+                                <span class="genre-tag">Жан-жақты</span>
+                            </div>
+                            <p class="hero-description">Тандзиро - отбасысын қолдау үшін көмір сататын жас жігіт. Бір күні ол отбасысының барлығы құрбан болып, тек қана қарындасы Назуко тірі қалды. Назуко енді қанды рух - демонға айналды...</p>
+                            <div class="hero-buttons">
+                                <button class="btn btn-primary watch-btn" data-id="1"><i class="fas fa-play"></i> Қарау</button>
+                                <button class="btn btn-secondary add-to-list" data-id="1"><i class="fas fa-plus"></i> Қосу</button>
+                                <button class="btn btn-secondary info-btn" data-id="1"><i class="fas fa-info-circle"></i> Түсіндірме</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-slide">
+                        <img src="https://via.placeholder.com/1280x450/1a1a2e/e94560?text=My+Hero+Academia" alt="My Hero Academia">
+                        <div class="hero-content">
+                            <h2 class="hero-title">My Hero Academia</h2>
+                            <div class="hero-genres">
+                                <span class="genre-tag">Сёнен</span>
+                                <span class="genre-tag">Супер қуат</span>
+                                <span class="genre-tag">Оқу</span>
+                            </div>
+                            <p class="hero-description">Болдырушы 98% адамдардың қандай да бір қасиеті бар əлемде, құрсақтаушысыз Идзуку Мидория "Херо" болу арманыңда. "All Might" құрсақтаушысыңнан "One For All" қасиетін алды...</p>
+                            <div class="hero-buttons">
+                                <button class="btn btn-primary watch-btn" data-id="2"><i class="fas fa-play"></i> Қарау</button>
+                                <button class="btn btn-secondary add-to-list" data-id="2"><i class="fas fa-plus"></i> Қосу</button>
+                                <button class="btn btn-secondary info-btn" data-id="2"><i class="fas fa-info-circle"></i> Түсіндірме</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-slide">
+                        <img src="https://via.placeholder.com/1280x450/1a1a2e/00ff88?text=Attack+on+Titans" alt="Attack on Titans">
+                        <div class="hero-content">
+                            <h2 class="hero-title">Атака на Титанов</h2>
+                            <div class="hero-genres">
+                                <span class="genre-tag">Сёнен</span>
+                                <span class="genre-tag">Апокалипсис</span>
+                                <span class="genre-tag">Стратегия</span>
+                            </div>
+                            <p class="hero-description">Елдің шекарасың қоршаған үлкен денелелі "Титандар" адамдарды құртты. Қалдық адамдар 3 қабырғаңң ішінде өмір сүреді. Эрен Йегер əскери мектепке түсіп, адамдардың жауын құрту үшін күресі...</p>
+                            <div class="hero-buttons">
+                                <button class="btn btn-primary watch-btn" data-id="3"><i class="fas fa-play"></i> Қарау</button>
+                                <button class="btn btn-secondary add-to-list" data-id="3"><i class="fas fa-plus"></i> Қосу</button>
+                                <button class="btn btn-secondary info-btn" data-id="3"><i class="fas fa-info-circle"></i> Түсіндірме</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-slider-controls">
+                    <button class="hero-slider-dot active" data-slide="0"></button>
+                    <button class="hero-slider-dot" data-slide="1"></button>
+                    <button class="hero-slider-dot" data-slide="2"></button>
+                </div>
+            </section>
             
-            <h3 style="margin-top: 30px;">Жанрлар</h3>
-            <ul class="sidebar-menu">
-                <li><a href="#"><i class="fas fa-fighter-jet"></i> Экшен</a></li>
-                <li><a href="#"><i class="fas fa-gem"></i> Фэнтези</a></li>
-                <li><a href="#"><i class="fas fa-heart"></i> Романтика</a></li>
-                <li><a href="#"><i class="fas fa-laugh"></i> Комедия</a></li>
-                <li><a href="#"><i class="fas fa-ghost"></i> Хоррор</a></li>
-                <li><a href="#"><i class="fas fa-rocket"></i> Ғылыми фантастика</a></li>
-            </ul>
-        </aside>
-
-        <!-- Негізгі контент -->
-        <main class="content">
-            <!-- Статистика -->
-            <div class="stats-cards">
-                <div class="stat-card fade-in">
-                    <div class="stat-icon watching">
-                        <i class="fas fa-eye"></i>
+            <!-- Featured Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Тандатұлы тақырыптар</h2>
+                    <a href="#" class="section-link">Барлығын қарау <i class="fas fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="anime-grid">
+                    <div class="anime-card" style="--order: 1">
+                        <div class="card-badge featured">Тандатұлы</div>
+                        <img src="https://via.placeholder.com/200x280/1a1a2e/00ff88?text=Featured+1" alt="Тандатұлы 1">
+                        <div class="anime-info">
+                            <h3 class="anime-title">Сейлор Мун: Құпияның құпиясы</h3>
+                            <div class="anime-meta">
+                                <span>Сезон 1</span>
+                                <span class="anime-rating"><i class="fas fa-star"></i> 9.2</span>
+                            </div>
+                            <div class="anime-genres">
+                                <span class="anime-genre">Махо сёдзё</span>
+                                <span class="anime-genre">Оқу</span>
+                                <span class="anime-genre">Романтика</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-info">
-                        <h3>12</h3>
-                        <p>Қазір көріп жатырмым</p>
+                    
+                    <div class="anime-card" style="--order: 2">
+                        <div class="card-badge featured">Тандатұлы</div>
+                        <img src="https://via.placeholder.com/200x280/1a1a2e/00ff88?text=Featured+2" alt="Тандатұлы 2">
+                        <div class="anime-info">
+                            <h3 class="anime-title">Наруто: Шинобидің жолы</h3>
+                            <div class="anime-meta">
+                                <span>Сезон 5</span>
+                                <span class="anime-rating"><i class="fas fa-star"></i> 9.5</span>
+                            </div>
+                            <div class="anime-genres">
+                                <span class="anime-genre">Сёнен</span>
+                                <span class="anime-genre">Супер қуат</span>
+                                <span class="anime-genre">Оқу</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="anime-card" style="--order: 3">
+                        <div class="card-badge featured">Тандатұлы</div>
+                        <img src="https://via.placeholder.com/200x280/1a1a2e/00ff88?text=Featured+3" alt="Тандатұлы 3">
+                        <div class="anime-info">
+                            <h3 class="anime-title">Сейлар Мун: Құпияның құпиясы</h3>
+                            <div class="anime-meta">
+                                <span>OVA</span>
+                                <span class="anime-rating"><i class="fas fa-star"></i> 9.0</span>
+                            </div>
+                            <div class="anime-genres">
+                                <span class="anime-genre">Махо сёдзё</span>
+                                <span class="anime-genre">Фэнтези</span>
+                                <span class="anime-genre">Романтика</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="anime-card" style="--order: 4">
+                        <div class="card-badge featured">Тандатұлы</div>
+                        <img src="https://via.placeholder.com/200x280/1a1a2e/00ff88?text=Featured+4" alt="Тандатұлы 4">
+                        <div class="anime-info">
+                            <h3 class="anime-title">Жер үстіндегі құдай: Жергілікті бөлім</h3>
+                            <div class="anime-meta">
+                                <span>Фильм</span>
+                                <span class="anime-rating"><i class="fas fa-star"></i> 9.7</span>
+                            </div>
+                            <div class="anime-genres">
+                                <span class="anime-genre">Сёнен</span>
+                                <span class="anime-genre">Супер қуат</span>
+                                <span class="anime-genre">Апокалипсис</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-card fade-in">
-                    <div class="stat-icon completed">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>45</h3>
-                        <p>Аяқталған</p>
-                    </div>
-                </div>
-                <div class="stat-card fade-in">
-                    <div class="stat-icon planned">
-                        <i class="fas fa-bookmark"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>24</h3>
-                        <p>Кейін көрім</p>
-                    </div>
-                </div>
-                <div class="stat-card fade-in">
-                    <div class="stat-icon dropped">
-                        <i class="fas fa-pause-circle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>3</h3>
-                        <p>Тоқтатылған</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Фильтрлер -->
-            <div class="filters">
-                <div class="filter-row">
-                    <div class="filter-group">
-                        <label>Сұрыптау</label>
-                        <select class="filter-select">
-                            <option>Соңғы қосылған</option>
-                            <option>Атауы бойынша</option>
-                            <option>Жуырда көрілген</option>
-                            <option>Жоғары бағаланған</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Жанр</label>
-                        <select class="filter-select">
-                            <option>Барлық жанрлар</option>
-                            <option>Экшен</option>
-                            <option>Фэнтези</option>
-                            <option>Романтика</option>
-                            <option>Комедия</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Күй</label>
-                        <select class="filter-select">
-                            <option>Барлық күйлер</option>
-                            <option>Көріп жатырмым</option>
-                            <option>Аяқталған</option>
-                            <option>Кейін көрім</option>
-                            <option>Тоқтатылған</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Анимелер тізімі -->
-            <h2 class="section-title">
-                Қазір көріп жатырмым
-                <a href="#">Барлығын көру <i class="fas fa-arrow-right"></i></a>
-            </h2>
+            </section>
             
-            <div class="anime-grid">
-                <!-- Аниме карточкалары -->
-                <div class="anime-card fade-in">
-                    <div class="anime-img">
-                        Attack on Titan
-                        <span class="anime-status">Жаңа эпизод</span>
-                    </div>
-                    <div class="anime-info">
-                        <h3>Attack on Titan</h3>
-                        <div class="anime-meta">
-                            <span>25/32 эп.</span>
-                            <span>8.9 ★</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 78%;"></div>
-                        </div>
-                        <p>78% көрдім</p>
-                        <div class="anime-actions">
-                            <button class="action-btn"><i class="fas fa-play"></i></button>
-                            <button class="action-btn"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn"><i class="fas fa-heart"></i></button>
-                        </div>
-                    </div>
+            <!-- News Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Соңғы жаңалықтар</h2>
+                    <a href="#" class="section-link" data-page="news">Барлығын қарау <i class="fas fa-chevron-right"></i></a>
                 </div>
                 
-                <div class="anime-card fade-in">
-                    <div class="anime-img">
-                        Demon Slayer
-                    </div>
-                    <div class="anime-info">
-                        <h3>Demon Slayer</h3>
-                        <div class="anime-meta">
-                            <span>12/26 эп.</span>
-                            <span>9.1 ★</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 46%;"></div>
-                        </div>
-                        <p>46% көрдім</p>
-                        <div class="anime-actions">
-                            <button class="action-btn"><i class="fas fa-play"></i></button>
-                            <button class="action-btn"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn"><i class="fas fa-heart"></i></button>
+                <div class="anime-grid">
+                    <div class="anime-card" style="--order: 1">
+                        <div class="card-badge new">Жаңа</div>
+                        <img src="https://via.placeholder.com/200x280/1a1a2e/00ff88?text=News+1" alt="Жаңалық 1">
+                        <div class="anime-info">
+                            <h3 class="anime-title">Аниме 2025: Жаңа жылдың таңдаулы сериалдары</h3>
+                            <div class="anime-meta">
+                                <span>22.08.2025</span>
+                                <span class="anime-rating"><i class="fas fa-eye"></i> 15K</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="anime-card fade-in">
-                    <div class="anime-img">
-                        One Piece
-                        <span class="anime-status">Жаңа эпизод</span>
-                    </div>
-                    <div class="anime-info">
-                        <h3>One Piece</h3>
-                        <div class="anime-meta">
-                            <span>1045/?</span>
-                            <span>9.5 ★</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 65%;"></div>
-                        </div>
-                        <p>65% көрдім</p>
-                        <div class="anime-actions">
-                            <button class="action-btn"><i class="fas fa-play"></i></button>
-                            <button class="action-btn"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn"><i class="fas fa-heart"></i></button>
+                    
+                    <div class="anime-card" style="--order: 2">
+                        <div class="card-badge new">Жаңа</div>
+                        <img src="https://via.placeholder.com/200x280/1a1a2e/00ff88?text=News+2" alt="Жаңалық 2">
+                        <div class="anime-info">
+                            <h3 class="anime-title">"Chainsaw Man" 2-сыныптың жарияланды</h3>
+                            <div class="anime-meta">
+                                <span>20.08.2025</span>
+                                <span class="anime-rating"><i class="fas fa-eye"></i> 23K</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="anime-card fade-in">
-                    <div class="anime-img">
-                        Jujutsu Kaisen
+                    
+                    <div class="anime-card" style="--order: 3">
+                        <img src="https://via.placeholder.com/200x280/1a1a2e/00ff88?text=News+3" alt="Жаңалық 3">
+                        <div class="anime-info">
+                            <h3 class="anime-title">"Jujutsu Kaisen" 0-ші фильм қазақ тілінде қазір қол жетімді</h3>
+                            <div class="anime-meta">
+                                <span>18.08.2025</span>
+                                <span class="anime-rating"><i class="fas fa-eye"></i> 18K</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="anime-info">
-                        <h3>Jujutsu Kaisen</h3>
-                        <div class="anime-meta">
-                            <span>18/24 эп.</span>
-                            <span>8.7 ★</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 75%;"></div>
-                        </div>
-                        <p>75% көрдім</p>
-                        <div class="anime-actions">
-                            <button class="action-btn"><i class="fas fa-play"></i></button>
-                            <button class="action-btn"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn"><i class="fas fa-heart"></i></button>
+                    
+                    <div class="anime-card" style="--order: 4">
+                        <img src="https://via.placeholder.com/200x280/1a1a2e/00ff88?text=News+4" alt="Жаңалық 4">
+                        <div class="anime-info">
+                            <h3 class="anime-title">Studio Ghibli жаңа анимациясы түстелді</h3>
+                            <div class="anime-meta">
+                                <span>15.08.2025</span>
+                                <span class="anime-rating"><i class="fas fa-eye"></i> 12K</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <h2 class="section-title">
-            Жуырда қосылған
-                <a href="#">Барлығын көру <i class="fas fa-arrow-right"></i></a>
-            </h2>
-            
-            <div class="anime-grid">
-                <div class="anime-card fade-in">
-                    <div class="anime-img">
-                        Spy x Family
-                    </div>
-                    <div class="anime-info">
-                        <h3>Spy x Family</h3>
-                        <div class="anime-meta">
-                            <span>12/12 эп.</span>
-                            <span>8.8 ★</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 100%;"></div>
-                        </div>
-                        <p>100% көрдім</p>
-                        <div class="anime-actions">
-                            <button class="action-btn"><i class="fas fa-play"></i></button>
-                            <button class="action-btn"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn"><i class="fas fa-heart"></i></button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="anime-card fade-in">
-                    <div class="anime-img">
-                        Chainsaw Man
-                    </div>
-                    <div class="anime-info">
-                        <h3>Chainsaw Man</h3>
-                        <div class="anime-meta">
-                            <span>8/12 эп.</span>
-                            <span>9.0 ★</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 67%;"></div>
-                        </div>
-                        <p>67% көрдім</p>
-                        <div class="anime-actions">
-                            <button class="action-btn"><i class="fas fa-play"></i></button>
-                            <button class="action-btn"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn"><i class="fas fa-heart"></i></button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="anime-card fade-in">
-                    <div class="anime-img">
-                        Oshi no Ko
-                    </div>
-                    <div class="anime-info">
-                        <h3>Oshi no Ko</h3>
-                        <div class="anime-meta">
-                            <span>11/11 эп.</span>
-                            <span>9.2 ★</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 100%;"></div>
-                        </div>
-                        <p>100% көрдім</p>
-                        <div class="anime-actions">
-                            <button class="action-btn"><i class="fas fa-play"></i></button>
-                            <button class="action-btn"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn"><i class="fas fa-heart"></i></button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="anime-card fade-in">
-                    <div class="anime-img">
-                        Vinland Saga
-                    </div>
-                    <div class="anime-info">
-                        <h3>Vinland Saga</h3>
-                        <div class="anime-meta">
-                            <span>24/24 эп.</span>
-                            <span>9.3 ★</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 100%;"></div>
-                        </div>
-                        <p>100% көрдім</p>
-                        <div class="anime-actions">
-                            <button class="action-btn"><i class="fas fa-play"></i></button>
-                            <button class="action-btn"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn"><i class="fas fa-heart"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Футер -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Аниме Бахылау</h3>
-                    <p>Сүйікті анимелеріңізді бақылау үшін қолданулы қосымша. Біз сіздің аниме тәжірибеңізді жақ
+            </section>
+       
