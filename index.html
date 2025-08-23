@@ -1,465 +1,341 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="kk">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Anime Kutubxona — Ekonom</title>
-  <meta name="description" content="Anime ilovasi: qidirish, janrlar, reyting, saqlanganlar va epizodlarni onlayn kormoq." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Tailwind (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root{--bg:#0b0f14;--card:#121821;--muted:#8aa0b2;--accent:#63b3ed;--ring:#2563eb;}
-    html,body{height:100%;}
-    body{font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; background:var(--bg); color:#e8eef5;}
-    .karta{background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.07);}
-    .karta:hover{border-color:rgba(99,179,237,0.5);}
-    .chip{background:rgba(99,179,237,0.15); border:1px solid rgba(99,179,237,0.25); color:#d6ecff}
-    .panel{background:var(--card); border:1px solid rgba(255,255,255,0.08);}
-    .btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.625rem .9rem; border-radius:14px; font-weight:600; border:1px solid rgba(255,255,255,0.08);}
-    .btn-prim{background:linear-gradient(135deg,#2563eb,#22d3ee); border:none; color:white;}
-    .btn-ghost{background:rgba(255,255,255,0.04)}
-    .btn-danger{background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.35); color:#fecaca}
-    .yozuv{color:var(--muted)}
-    .modal-bg{background:rgba(0,0,0,.65); backdrop-filter:saturate(140%) blur(6px)}
-    .progress{
-      appearance:none; height:8px; width:100%; border-radius:999px;
-      background:rgba(255,255,255,.08);
-    }
-    .progress::-webkit-progress-value{background:linear-gradient(90deg,#22d3ee,#2563eb); border-radius:999px}
-    .progress::-moz-progress-bar{background:linear-gradient(90deg,#22d3ee,#2563eb); border-radius:999px}
-    .badge{font-size:.75rem; padding:.25rem .55rem; border-radius:999px; border:1px solid rgba(255,255,255,.12)}
-    .sr{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Қазақша Аниме Порталы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        header {
+            background: linear-gradient(to right, #ff6b6b, #4ecdc4);
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 2em;
+            color: white;
+        }
+
+        .search-container {
+            margin: 15px auto;
+            text-align: center;
+        }
+
+        .search-container input {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-container input:focus {
+            border-color: #ff6b6b;
+        }
+
+        .anime-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            padding: 15px;
+        }
+
+        .anime-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        body.dark-mode .anime-card {
+            background: #2a2a2a;
+        }
+
+        .anime-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .anime-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .anime-card h3 {
+            padding: 10px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .anime-card p {
+            padding: 0 10px 10px;
+            font-size: 0.85em;
+            color: #666;
+            text-align: center;
+        }
+
+        body.dark-mode .anime-card p {
+            color: #b0b0b0;
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #ccc;
+        }
+
+        .favorite-btn.favorited {
+            color: #ff6b6b;
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .mode-toggle {
+            background: #333;
+            color: #fff;
+        }
+
+        .favorites-section {
+            padding: 20px;
+            display: none;
+        }
+
+        .favorites-section.active {
+            display: block;
+        }
+
+        .favorites-section h2 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .nav-tabs button {
+            padding: 10px 20px;
+            border: none;
+            background: #eee;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        .nav-tabs button.active {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: white;
+            margin-top: 20px;
+        }
+
+        body.dark-mode footer {
+            background: #222;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.5em;
+            }
+
+            .anime-card img {
+                height: 180px;
+            }
+
+            .search-container input {
+                width: 90%;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Yuqori navigatsiya -->
-  <header class="sticky top-0 z-40 border-b border-white/10 bg-[#0b0f14]/80 backdrop-blur">
-    <div class="mx-auto max-w-7xl px-4 py-3 flex items-center gap-3">
-      <button id="yonmenyu_tugma" class="btn btn-ghost" aria-label="Yon menyuni ochish">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </button>
-      <div class="flex items-center gap-2">
-        <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-cyan-300 text-[#0b0f14] font-black">A</span>
-        <h1 class="text-lg sm:text-xl font-bold tracking-tight">Anime Kutubxona <span class="badge ml-2">Ekonom</span></h1>
-      </div>
-      <div class="ml-auto flex items-center gap-2">
-        <button id="offline_holat" class="badge">Offline</button>
-        <button id="dark_toggle" class="btn btn-ghost" title="Tungi rejim">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
-        </button>
-      </div>
+    <header>
+        <h1>Қазақша Аниме Порталы</h1>
+        <p>Сүйікті анимелеріңді қазақ тілінде тамашала!</p>
+    </header>
+
+    <button class="mode-toggle" onclick="toggleDarkMode()">🌙</button>
+
+    <div class="nav-tabs">
+        <button class="active" onclick="showSection('all')">Барлық анимелер</button>
+        <button onclick="showSection('favorites')">Таңдаулылар</button>
     </div>
-  </header>
 
-  <!-- Yon menyu -->
-  <aside id="yonmenyu" class="fixed inset-y-0 left-0 z-50 w-80 -translate-x-full transition-transform duration-300">
-    <div class="h-full panel p-4 flex flex-col gap-4">
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold">Menyu</h2>
-        <button class="btn btn-ghost" id="yonmenyu_yopish" aria-label="Yopish">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <nav class="flex flex-col gap-2">
-        <button class="btn btn-ghost" data-bo'lim="bosh_sahifa">🏠 Bosh sahifa</button>
-        <button class="btn btn-ghost" data-bo'lim="saqlanganlar">⭐ Saqlanganlar</button>
-        <button class="btn btn-ghost" data-bo'lim="tarix">🕒 Davom etish</button>
-        <button class="btn btn-ghost" id="kesh_tozalash">🗑️ Keshni tozalash</button>
-        <a class="btn btn-ghost" href="#" id="app_haqida">ℹ️ Ilova haqida</a>
-      </nav>
-      <div class="mt-auto text-xs yozuv">
-        <p>Versiya: 1.0 (Ekonom, bir fayl)</p>
-        <p>PWA: offline keshlash yoqilgan</p>
-      </div>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Аниме іздеу..." onkeyup="searchAnime()">
     </div>
-  </aside>
 
-  <!-- Asosiy maydon -->
-  <main class="mx-auto max-w-7xl px-4 py-6">
-    <!-- Qidirish va filtr -->
-    <section class="panel rounded-2xl p-4 mb-6">
-      <div class="grid md:grid-cols-2 gap-3">
-        <label class="flex items-center gap-3">
-          <span class="sr">Qidirish</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 yozuv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input id="qidirish" type="text" placeholder="Qidirish: nomi yoki kodi..." class="w-full bg-transparent outline-none placeholder:opacity-70" />
-        </label>
-        <div class="flex flex-wrap items-center gap-2">
-          <select id="saralash" class="panel rounded-xl px-3 py-2">
-            <option value="yangi">Saralash: Yangi</option>
-            <option value="reyting">Saralash: Reyting</option>
-            <option value="nom">Saralash: Nom</option>
-          </select>
-          <div id="janrlar_filter" class="flex flex-wrap gap-2"></div>
-          <button id="filtr_tiklash" class="btn btn-ghost">Filtrni tiklash</button>
+    <div class="anime-list" id="animeList">
+        <div class="anime-card" data-id="1">
+            <button class="favorite-btn" onclick="toggleFavorite(1)">♡</button>
+            <img src="https://via.placeholder.com/200x250?text=Наруто" alt="Наруто">
+            <h3>Наруто</h3>
+            <p>Жанр: Шытырман, Төбелес</p>
         </div>
-      </div>
-    </section>
-
-    <!-- Kartalar -->
-    <section>
-      <div id="katalog" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-      <div id="bo'sh" class="hidden text-center p-10 yozuv">Hech narsa topilmadi 🤷‍♂️</div>
-    </section>
-  </main>
-
-  <!-- Tafsilotlar oynasi -->
-  <div id="modal" class="fixed inset-0 hidden items-end md:items-center justify-center modal-bg p-3">
-    <div class="panel w-full max-w-3xl rounded-2xl overflow-hidden">
-      <div class="flex items-center justify-between p-4 border-b border-white/10">
-        <h3 id="modal_sarlavha" class="text-lg font-semibold">Tafsilotlar</h3>
-        <button id="modal_yopish" class="btn btn-ghost" aria-label="Yopish">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <div id="modal_tana" class="p-4 space-y-4"></div>
+        <div class="anime-card" data-id="2">
+            <button class="favorite-btn" onclick="toggleFavorite(2)">♡</button>
+            <img src="https://via.placeholder.com/200x250?text=Өлім+Дәптері" alt="Өлім Дәптері">
+            <h3>Өлім Дәптері</h3>
+            <p>Жанр: Детектив, Мистика</p>
+        </div>
+        <div class="anime-card" data-id="3">
+            <button class="favorite-btn" onclick="toggleFavorite(3)">♡</button>
+            <img src="https://via.placeholder.com/200x250?text=Куроко+Баскетболы" alt="Куроко Баскетболы">
+            <h3>Куроко Баскетболы</h3>
+            <p>Жанр: Спорт, Драма</p>
+        </div>
+        <div class="anime-card" data-id="4">
+            <button class="favorite-btn" onclick="toggleFavorite(4)">♡</button>
+            <img src="https://via.placeholder.com/200x250?text=Хаулдың+Қамалы" alt="Хаулдың Қамалы">
+            <h3>Хаулдың Қозғалмалы Қамалы</h3>
+            <p>Жанр: Фэнтези, Махаббат</p>
+        </div>
+        <div class="anime-card" data-id="5">
+            <button class="favorite-btn" onclick="toggleFavorite(5)">♡</button>
+            <img src="https://via.placeholder.com/200x250?text=Титандар+Шабуылы" alt="Титандар Шабуылы">
+            <h3>Титандар Шабуылы</h3>
+            <p>Жанр: Экшн, Фэнтези</p>
+        </div>
     </div>
-  </div>
 
-  <!-- Oynatuvchi pastki paneli -->
-  <div id="oynatuvchi_panel" class="fixed inset-x-0 bottom-0 z-40 translate-y-full transition-transform">
-    <div class="panel rounded-t-2xl p-3">
-      <div class="flex items-center justify-between">
-        <div class="min-w-0">
-          <div id="oynatuvchi_sarlavha" class="truncate font-semibold">—</div>
-          <div id="oynatuvchi_ep_info" class="text-sm yozuv truncate">—</div>
-        </div>
-        <div class="flex items-center gap-2">
-          <button id="oynatuvchi_yopish" class="btn btn-ghost" aria-label="Yopish">Yopish</button>
-          <a id="yuklab_olish" class="btn btn-ghost" download>Yuklab olish</a>
-        </div>
-      </div>
-      <div class="mt-3">
-        <video id="video" class="w-full rounded-xl" controls preload="metadata" playsinline></video>
-        <progress id="video_progress" class="progress mt-2" max="100" value="0"></progress>
-      </div>
+    <div class="favorites-section" id="favoritesSection">
+        <h2>Таңдаулы анимелер</h2>
+        <div class="anime-list" id="favoritesList"></div>
     </div>
-  </div>
 
-  <template id="karta_shablon">
-    <article class="karta rounded-2xl overflow-hidden">
-      <div class="relative">
-        <img class="w-full h-48 object-cover" alt="Poster" />
-        <div class="absolute inset-x-2 bottom-2 flex items-center gap-2">
-          <span class="chip text-xs px-2 py-1">Reyting <b class="reyting"></b></span>
-          <span class="badge text-xs yil"></span>
-        </div>
-      </div>
-      <div class="p-3 flex flex-col gap-2">
-        <h3 class="font-semibold leading-tight line-clamp-2"></h3>
-        <div class="flex flex-wrap gap-1 janrlar"></div>
-        <progress class="progress davom" max="100" value="0"></progress>
-        <div class="grid grid-cols-3 gap-2 pt-1">
-          <button class="btn btn-prim ko'rish">Ko'rish</button>
-          <button class="btn btn-ghost saqlash">Saqlash</button>
-          <button class="btn btn-ghost tafsilot">Tafsilot</button>
-        </div>
-      </div>
-    </article>
-  </template>
+    <footer>
+        <p>&copy; 2025 Қазақша Аниме Порталы. Барлық құқықтар қорғалған.</p>
+    </footer>
 
-  <script>
-  // ====== Ma'lumotlar (namuna) ======
-  const animelar = [
-    {
-      id: 'a1', kod: 'ONEP', nomi: 'One Piece (Namuna)', yil: 1999, reyting: 9.1,
-      poster: 'https://images.unsplash.com/photo-1545127398-14699f92334b?q=80&w=1200&auto=format&fit=crop',
-      janrlar: ['Sarguzasht', 'Fantastika', 'Komediya'],
-      tavsif: 'Dengiz qaroqchilari va afsonaviy xazinani izlash haqidagi sarguzasht.',
-      epizodlar: [
-        {eid: 'a1e1', nomi: '1-qism: Boshlanish', mp4: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4', davom: 0},
-        {eid: 'a1e2', nomi: '2-qism: Jamoa', mp4: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', davom: 0}
-      ]
-    },
-    {
-      id: 'a2', kod: 'AOT', nomi: 'Attack on Titan (Namuna)', yil: 2013, reyting: 9.0,
-      poster: 'https://images.unsplash.com/photo-1511185307590-3c29c112bad3?q=80&w=1200&auto=format&fit=crop',
-      janrlar: ['Aksiya', 'Drama', 'Fantastika'],
-      tavsif: 'Titanlarga qarshi insoniyatning omon qolish kurashi.',
-      epizodlar: [
-        {eid: 'a2e1', nomi: '1-qism: Dev', mp4: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4', davom: 0}
-      ]
-    },
-    {
-      id: 'a3', kod: 'DEMN', nomi: 'Demon Slayer (Namuna)', yil: 2019, reyting: 8.7,
-      poster: 'https://images.unsplash.com/photo-1544551763-7ef0382059c9?q=80&w=1200&auto=format&fit=crop',
-      janrlar: ['Aksiya', 'Fentezi'],
-      tavsif: 'Oila qasosini olish uchun yovuz ruhlarga qarshi kurash.',
-      epizodlar: [
-        {eid: 'a3e1', nomi: '1-qism: Qasam', mp4: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4', davom: 0}
-      ]
-    },
-    {
-      id: 'a4', kod: 'JJK', nomi: 'Jujutsu Kaisen (Namuna)', yil: 2020, reyting: 8.6,
-      poster: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop',
-      janrlar: ['Aksiya', 'Sehr'],
-      tavsif: 'La’natlangan energiya va sehrgarlar maktabi haqida.',
-      epizodlar: [
-        {eid: 'a4e1', nomi: '1-qism: La’nat', mp4: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4', davom: 0}
-      ]
-    }
-  ];
+    <script>
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
-  // Janrlar ro'yxati (avtomatik)
-  const barcha_janrlar = Array.from(new Set(animelar.flatMap(a=>a.janrlar))).sort();
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const modeToggle = document.querySelector('.mode-toggle');
+            modeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        }
 
-  // ====== Holat va kesh ======
-  const ls = {
-    ol: (k,def)=>{try{const v=localStorage.getItem(k); return v?JSON.parse(v):def}catch{ return def}},
-    saqla: (k,v)=>{try{localStorage.setItem(k, JSON.stringify(v))}catch{}}
-  }
-  const K_SAQLANGAN = 'saqlanganlar_v1';
-  const K_DAVOM = 'davom_v1'; // {eid: foiz}
+        function showSection(section) {
+            const allSection = document.getElementById('animeList').parentElement;
+            const favoritesSection = document.getElementById('favoritesSection');
+            const tabs = document.querySelectorAll('.nav-tabs button');
 
-  let holat = {
-    qidiruv: '',
-    saralash: 'yangi',
-    janr_filtri: new Set(),
-    bo'lim: 'bosh_sahifa'
-  }
+            if (section === 'all') {
+                allSection.style.display = 'block';
+                favoritesSection.classList.remove('active');
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                allSection.style.display = 'none';
+                favoritesSection.classList.add('active');
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+                renderFavorites();
+            }
+        }
 
-  // ====== DOM ======
-  const el = (sel,par=document)=>par.querySelector(sel);
-  const els = (sel,par=document)=>Array.from(par.querySelectorAll(sel));
+        function toggleFavorite(id) {
+            const index = favorites.indexOf(id);
+            const btn = document.querySelector(`.anime-card[data-id="${id}"] .favorite-btn`);
+            if (index === -1) {
+                favorites.push(id);
+                btn.classList.add('favorited');
+                btn.innerHTML = '❤️';
+            } else {
+                favorites.splice(index, 1);
+                btn.classList.remove('favorited');
+                btn.innerHTML = '♡';
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            renderFavorites();
+        }
 
-  const katalog = el('#katalog');
-  const bosh = el('#bo\'sh');
-  const karta_tpl = el('#karta_shablon');
+        function renderFavorites() {
+            const favoritesList = document.getElementById('favoritesList');
+            favoritesList.innerHTML = '';
+            favorites.forEach(id => {
+                const card = document.querySelector(`.anime-card[data-id="${id}"]`).cloneNode(true);
+                favoritesList.appendChild(card);
+                card.querySelector('.favorite-btn').onclick = () => toggleFavorite(id);
+            });
+        }
 
-  // Yon menyu
-  const yon = el('#yonmenyu');
-  const yonBtn = el('#yonmenyu_tugma');
-  const yonYop = el('#yonmenyu_yopish');
-  yonBtn.onclick = ()=> yon.style.transform = 'translateX(0)';
-  yonYop.onclick = ()=> yon.style.transform = '';
-  els('[data-bo\'lim]').forEach(b=>b.onclick = ()=>{ holat["bo'lim"] = b.getAttribute('data-bo\'lim'); yangila(); yon.style.transform=''; });
+        function searchAnime() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let animeCards = document.getElementsByClassName('anime-card');
 
-  // Qidirish va filtrlar
-  el('#qidirish').addEventListener('input', e=>{ holat.qidiruv = e.target.value.toLowerCase().trim(); yangila(); });
-  el('#saralash').addEventListener('change', e=>{ holat.saralash = e.target.value; yangila(); });
-  el('#filtr_tiklash').onclick = ()=>{ holat.janr_filtri.clear(); els('#janrlar_filter button').forEach(b=>b.classList.remove('ring','ring-sky-400')); yangila(); };
+            for (let i = 0; i < animeCards.length; i++) {
+                let title = animeCards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                if (title.includes(input)) {
+                    animeCards[i].style.display = '';
+                } else {
+                    animeCards[i].style.display = 'none';
+                }
+            }
+        }
 
-  // Janr chiplarini yaratish
-  const janrWrap = el('#janrlar_filter');
-  for(const j of barcha_janrlar){
-    const btn = document.createElement('button');
-    btn.className = 'btn btn-ghost text-sm';
-    btn.textContent = j;
-    btn.onclick = ()=>{
-      if(holat.janr_filtri.has(j)){ holat.janr_filtri.delete(j); btn.classList.remove('ring','ring-sky-400'); }
-      else { holat.janr_filtri.add(j); btn.classList.add('ring','ring-sky-400'); }
-      yangila();
-    }
-    janrWrap.appendChild(btn);
-  }
-
-  // ====== Render ======
-  function mosmi(a){
-    const q = holat.qidiruv;
-    const janr_ok = holat.janr_filtri.size===0 || a.janrlar.some(j=>holat.janr_filtri.has(j));
-    const q_ok = !q || a.nomi.toLowerCase().includes(q) || a.kod.toLowerCase().includes(q);
-    return janr_ok && q_ok;
-  }
-  function sarala(ro){
-    if(holat.saralash==='reyting') ro.sort((x,y)=>y.reyting-x.reyting);
-    else if(holat.saralash==='nom') ro.sort((x,y)=>x.nomi.localeCompare(y.nomi));
-    else ro.sort((x,y)=>y.yil-x.yil);
-  }
-
-  function davomiFoiz(eid){ const d = ls.ol(K_DAVOM,{}); return d[eid]||0; }
-  function davomniYoz(eid, foiz){ const d = ls.ol(K_DAVOM,{}); d[eid]=Math.max(0,Math.min(100,foiz)); ls.saqla(K_DAVOM,d); }
-
-  function kartaYarat(a){
-    const klon = karta_tpl.content.firstElementChild.cloneNode(true);
-    const img = el('img', klon); img.src = a.poster; img.alt = a.nomi;
-    el('.reyting', klon).textContent = a.reyting.toFixed(1);
-    el('.yil', klon).textContent = a.yil;
-    el('h3', klon).textContent = a.nomi;
-    const janrlar = el('.janrlar', klon);
-    a.janrlar.forEach(j=>{ const s=document.createElement('span'); s.className='badge'; s.textContent=j; janrlar.appendChild(s) });
-
-    // davom progressini ep1 boyicha ko'rsatamiz (soddalashtirilgan)
-    const ep1 = a.epizodlar[0];
-    const foiz = davomiFoiz(ep1.eid);
-    const prog = el('.davom', klon); prog.value = foiz; prog.title = `Davom: ${foiz}%`;
-
-    // tugmalar
-    el('.ko\'rish', klon).onclick = ()=> oynat(a, ep1);
-    el('.saqlash', klon).onclick = ()=> saqlashToggle(a.id);
-    el('.tafsilot', klon).onclick = ()=> tafsilotOyna(a);
-
-    return klon;
-  }
-
-  function renderKatalog(ro){
-    katalog.innerHTML='';
-    if(ro.length===0){ bosh.classList.remove('hidden'); return; } else bosh.classList.add('hidden');
-    ro.forEach(a=> katalog.appendChild(kartaYarat(a)));
-  }
-
-  function yangila(){
-    if(holat["bo'lim"]==='saqlanganlar'){
-      const saq = new Set(ls.ol(K_SAQLANGAN, []));
-      const ro = animelar.filter(a=>saq.has(a.id));
-      sarala(ro); renderKatalog(ro); return;
-    }
-    if(holat["bo'lim"]==='tarix'){
-      const d = ls.ol(K_DAVOM,{}); const ids = new Set(Object.keys(d).map(eid=>eid.split('e')[0]));
-      const ro = animelar.filter(a=> a.epizodlar.some(e=> d[e.eid]>0));
-      sarala(ro); renderKatalog(ro); return;
-    }
-    const ro = animelar.filter(mosmi);
-    sarala(ro); renderKatalog(ro);
-  }
-
-  // ====== Saqlash ======
-  function saqlashToggle(id){
-    const saq = new Set(ls.ol(K_SAQLANGAN, []));
-    if(saq.has(id)) saq.delete(id); else saq.add(id);
-    ls.saqla(K_SAQLANGAN, Array.from(saq));
-    kichikBildirish(saq.has(id)?'Saqlandi ⭐':'Olib tashlandi');
-    yangila();
-  }
-
-  // ====== Tafsilotlar ======
-  const modal = el('#modal');
-  el('#modal_yopish').onclick = ()=> modal.classList.add('hidden');
-
-  function tafsilotOyna(a){
-    el('#modal_sarlavha').textContent = a.nomi;
-    const tana = el('#modal_tana');
-    tana.innerHTML = `
-      <div class="grid md:grid-cols-[160px,1fr] gap-4">
-        <img class="w-full h-40 object-cover rounded-xl" src="${a.poster}" alt="${a.nomi}"/>
-        <div class="space-y-2">
-          <div class="flex flex-wrap gap-2">${a.janrlar.map(j=>`<span class='badge'>${j}</span>`).join('')}</div>
-          <div class="text-sm yozuv">Kod: <b>${a.kod}</b> • Yil: <b>${a.yil}</b> • Reyting: <b>${a.reyting.toFixed(1)}</b></div>
-          <p>${a.tavsif}</p>
-          <div class="flex gap-2">
-            <button class="btn btn-prim" onclick="(${saqlashToggle.toString()})('${a.id}')">⭐ Saqlash</button>
-            <button class="btn btn-ghost" onclick="navigator.share?navigator.share({title:'${a.nomi}', text:'Anime tavsiya', url:location.href}):kichikBildirish('Ulashish qo\'llab-quvvatlanmaydi')">Ulashish</button>
-          </div>
-        </div>
-      </div>
-      <div class="mt-3">
-        <h4 class="font-semibold mb-2">Epizodlar</h4>
-        <div class="grid gap-2">
-          ${a.epizodlar.map((e,idx)=>`
-            <div class="flex items-center justify-between panel rounded-xl p-2">
-              <div>
-                <div class="font-medium">${idx+1}-qism — ${e.nomi}</div>
-                <div class="text-xs yozuv">Davom: ${davomiFoiz(e.eid)}%</div>
-              </div>
-              <div class="flex gap-2">
-                <button class="btn btn-prim" onclick='oynatId("${a.id}","${e.eid}")'>Ko'rish</button>
-                <a class="btn btn-ghost" href="${e.mp4}" download>Yuklab olish</a>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-    modal.classList.remove('hidden');
-  }
-
-  // ====== Oynatuvchi ======
-  const oyn_pnl = el('#oynatuvchi_panel');
-  const video = el('#video');
-  const vprog = el('#video_progress');
-  const oyn_sarlavha = el('#oynatuvchi_sarlavha');
-  const oyn_info = el('#oynatuvchi_ep_info');
-  const yuklab = el('#yuklab_olish');
-
-  let joriy = { anime: null, ep: null };
-
-  function oynat(anime, ep){
-    joriy = {anime, ep};
-    oyn_sarlavha.textContent = anime.nomi;
-    oyn_info.textContent = ep.nomi;
-    video.src = ep.mp4;
-    video.currentTime = 0;
-    yuklab.href = ep.mp4;
-    oyn_pnl.style.transform = 'translateY(0)';
-    modal.classList.add('hidden');
-  }
-  window.oynatId = function(animeId, eid){
-    const a = animelar.find(x=>x.id===animeId);
-    const ep = a.epizodlar.find(e=>e.eid===eid);
-    oynat(a,ep);
-  }
-  el('#oynatuvchi_yopish').onclick = ()=>{ oyn_pnl.style.transform = ''; video.pause(); }
-
-  // Video davom nazorati
-  video.addEventListener('timeupdate', ()=>{
-    if(!joriy.ep) return;
-    const foiz = Math.round((video.currentTime / (video.duration||1))*100);
-    vprog.value = foiz;
-    davomniYoz(joriy.ep.eid, foiz);
-  });
-
-  // ====== Bildirish ======
-  let bildirish_timer = null;
-  function kichikBildirish(matn){
-    clearTimeout(bildirish_timer);
-    let elr = document.getElementById('toast');
-    if(!elr){ elr = document.createElement('div'); elr.id='toast'; elr.className='fixed bottom-4 left-1/2 -translate-x-1/2 panel px-4 py-2 rounded-xl shadow-xl'; document.body.appendChild(elr); }
-    elr.textContent = matn;
-    elr.style.opacity = '1';
-    bildirish_timer = setTimeout(()=>{ elr.style.opacity='0'; }, 1800);
-  }
-
-  // ====== Offline PWA (bir faylli SW) ======
-  (function(){
-    if(!('serviceWorker' in navigator)) return;
-    const sw_kod = `
-      const CACHE = 'anime-ekonom-v1';
-      self.addEventListener('install', e=>{
-        e.waitUntil(caches.open(CACHE).then(c=> c.addAll(['./'])));
-        self.skipWaiting();
-      });
-      self.addEventListener('activate', e=>{ e.waitUntil(self.clients.claim()) });
-      self.addEventListener('fetch', e=>{
-        const url = new URL(e.request.url);
-        // Offline birinchi: mavjud bolsa keshdan
-        e.respondWith(
-          caches.match(e.request).then(r=> r || fetch(e.request).then(resp=>{
-            const kop = resp.clone();
-            caches.open(CACHE).then(c=> c.put(e.request, kop));
-            return resp;
-          }).catch(()=> caches.match('./')))
-        );
-      });
-    `;
-    const blob = new Blob([sw_kod], {type:'text/javascript'});
-    const url = URL.createObjectURL(blob);
-    navigator.serviceWorker.register(url).then(()=>{ document.getElementById('offline_holat').textContent='Offline tayyor'; }).catch(()=>{});
-  })();
-
-  // ====== Tungi rejim tugmasi (demo) ======
-  el('#dark_toggle').onclick = ()=>{
-    document.documentElement.classList.toggle('invert');
-    document.documentElement.classList.toggle('hue-rotate-180');
-  }
-
-  // Keshni tozalash
-  el('#kesh_tozalash').onclick = async ()=>{
-    await caches.keys().then(ks=> Promise.all(ks.map(k=> caches.delete(k))));
-    localStorage.clear();
-    kichikBildirish('Kesh va mahalliy malumotlar tozalandi');
-    yangila();
-  }
-
-  // Ilova haqida
-  el('#app_haqida').onclick = (e)=>{
-    e.preventDefault();
-    alert('Anime Kutubxona — ekonom versiya. Qidirish, saralash, saqlash, oynatish va offline kesh mavjud.');
-  }
-
-  // Dastlabki render
-  yangila();
-  </script>
+        // Initialize favorites
+        favorites.forEach(id => {
+            const btn = document.querySelector(`.anime-card[data-id="${id}"] .favorite-btn`);
+            if (btn) {
+                btn.classList.add('favorited');
+                btn.innerHTML = '❤️';
+            }
+        });
+    </script>
 </body>
 </html>
