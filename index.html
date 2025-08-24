@@ -1,672 +1,324 @@
 <!doctype html>
-<html lang="kk">
+<html lang="uz">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AnilordTV — Аниме көру платформасы</title>
-  <meta name="description" content="AnilordTV: Қазақша аниме, жанрлар, рейтинг, жаңа эпизодтар және апталық релиздер. Көру, бағалау, пікір қалдыру." />
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: { DEFAULT: "#7C3AED", dark: "#5B21B6", light: "#C4B5FD" }
-          }
-        }
-      }
-    }
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AnilordTV — Anime sayt</title>
   <style>
-    /* Жұлдыз иконкалары үшін кішкене стили */
-    .star { width: 22px; height: 22px; cursor: pointer; color: #FBBF24; }
-    .star.off { color: #4B5563; }
-    .line-clamp-2{ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden }
-    .scrollbar-thin::-webkit-scrollbar{height:6px;width:6px}
-    .scrollbar-thin::-webkit-scrollbar-thumb{background:#4b5563;border-radius:8px}
+    /* Oddiy reset */
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa7bf;--accent:#ffcc00;--glass:rgba(255,255,255,0.04)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;background:linear-gradient(180deg,#071023 0%, #0b1227 100%);color:#e6eef8}
+    a{text-decoration:none;color:inherit}
+    .container{max-width:1100px;margin:28px auto;padding:16px}
+
+    /* Navbar */
+    .nav{display:flex;align-items:center;gap:12px}
+    .logo{font-weight:800;font-size:20px;color:var(--accent)}
+    .menu{display:flex;gap:10px;margin-left:16px}
+    .menu a{padding:8px 10px;border-radius:8px;color:var(--muted);font-size:14px}
+    .menu a:hover{background:var(--glass);color:#fff}
+    .search{margin-left:auto;display:flex;gap:8px;align-items:center}
+    .search input{padding:8px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit}
+    .user-actions{display:flex;gap:8px;margin-left:12px}
+    .btn{background:var(--accent);color:#071023;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+
+    /* Layout */
+    .grid{display:grid;grid-template-columns:240px 1fr;gap:18px;margin-top:20px}
+    .sidebar{background:var(--card);padding:14px;border-radius:12px}
+    .content{padding:6px}
+    .genres{display:flex;flex-direction:column;gap:8px}
+    .genre{padding:8px;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
+    .genre:hover{background:var(--glass);color:#fff}
+
+    /* Cards */
+    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:10px;overflow:hidden;padding:10px}
+    .poster{height:280px;background-size:cover;background-position:center;border-radius:8px}
+    .card h3{margin:8px 0 4px;font-size:16px}
+    .meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+    .rating{display:flex;gap:4px;align-items:center}
+
+    /* Modal */
+    .modal-back{position:fixed;inset:0;background:rgba(2,6,23,0.7);display:none;align-items:center;justify-content:center}
+    .modal{background:#071329;padding:18px;border-radius:12px;max-width:900px;width:95%}
+    .modal .head{display:flex;gap:12px}
+    .modal .head img{width:220px;height:300px;object-fit:cover;border-radius:6px}
+    .modal .info{flex:1}
+    .stars{display:inline-block}
+    .star{cursor:pointer;font-size:20px;color:var(--muted)}
+    .star.filled{color:var(--accent)}
+
+    /* Admin form */
+    .admin-form input,.admin-form select,.admin-form textarea{width:100%;padding:10px;margin-bottom:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit}
+
+    /* Responsive */
+    @media (max-width:880px){.grid{grid-template-columns:1fr}.sidebar{order:2}.search{display:none}.poster{height:200px}.modal .head{flex-direction:column}.modal .head img{width:100%;height:auto}}
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100">
-  <!-- Top bar -->
-  <header class="sticky top-0 z-50 bg-zinc-900/80 backdrop-blur border-b border-zinc-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-4">
-      <!-- Logo -->
-      <a href="#" class="flex items-center gap-2 font-bold text-xl">
-        <span class="inline-flex w-8 h-8 rounded bg-brand items-center justify-center">🜲</span>
-        <span>AnilordTV</span>
-      </a>
-
-      <!-- Left nav -->
-      <nav class="hidden md:flex items-center gap-4 text-sm">
-        <a href="#genres" class="hover:text-brand">Жанрлар</a>
-        <a href="#search" class="hover:text-brand">Аниме іздеу</a>
-        <a href="#tv" class="hover:text-brand">Сериалдар (TV)</a>
-        <a href="#movies" class="hover:text-brand">Фильмдер (OVA/ONA/Movie)</a>
-        <a href="#top-rated" class="hover:text-brand">Рейтинг</a>
-        <a href="#new" class="hover:text-brand">Жаңа</a>
-        <a href="#favorites" class="hover:text-brand">Таңдаулыларым</a>
-        <a href="#schedule" class="hover:text-brand">Кесте</a>
+<body>
+  <div class="container">
+    <header class="nav">
+      <div class="logo">AnilordTV</div>
+      <nav class="menu">
+        <a href="#" data-filter="all">Bosh sahifa</a>
+        <a href="#" data-filter="genres">Janrlar</a>
+        <a href="#" data-filter="rating">Reyting</a>
+        <a href="#" data-filter="yangi">Yangi chiqqanlar</a>
+        <a href="#" data-filter="mylist">Tanlanganlar</a>
       </nav>
 
-      <!-- Search -->
-      <div id="search" class="flex-1 hidden lg:flex">
-        <div class="w-full relative">
-          <input id="q" type="search" class="w-full bg-zinc-800/80 border border-zinc-700 rounded-lg pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
-                 placeholder="Атауы, студиясы немесе коды бойынша іздеңіз…" />
-          <svg class="w-5 h-5 absolute left-3 top-2.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="m21 21-4.3-4.3M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z"/></svg>
+      <div class="search">
+        <input id="qInput" placeholder="Nom, studiya yoki kod bo'yicha qidirish..." />
+        <button class="ghost" id="qBtn">Qidiruv</button>
+      </div>
+
+      <div class="user-actions">
+        <button class="ghost" id="kirishBtn">Kirish / Ro'yxatdan o'tish</button>
+        <button class="btn" id="adminOpen">Admin</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <aside class="sidebar">
+        <h4>Filtrlash</h4>
+        <div style="margin-top:8px">
+          <label>Format</label>
+          <select id="filterFormat">
+            <option value="all">Barchasi</option>
+            <option value="TV">TV</option>
+            <option value="Movie">Movie</option>
+            <option value="OVA">OVA</option>
+          </select>
         </div>
-      </div>
-
-      <!-- Quick filters trigger (mobile) -->
-      <button id="filtersOpen" class="md:hidden ml-auto px-3 py-2 bg-zinc-800 rounded-lg border border-zinc-700 text-sm">Сүзгілер</button>
-
-      <!-- Right user -->
-      <div class="flex items-center gap-2 ml-auto">
-        <a href="#auth" class="px-3 py-1.5 bg-brand/20 border border-brand/40 rounded-lg text-sm hover:bg-brand/30">Кіру / Тіркелу</a>
-        <div class="hidden sm:flex items-center gap-2 text-sm">
-          <a href="#profile" class="hover:text-brand">Профиль</a>
-          <a href="#admin" class="hover:text-brand">Әкімші панелі</a>
-          <div class="relative">
-            <select id="lang" class="bg-zinc-800 border border-zinc-700 rounded-lg py-1.5 pl-2 pr-6 text-sm">
-              <option>Қазақша</option><option>Рус</option><option>Eng</option>
-            </select>
-          </div>
+        <div style="margin-top:12px">
+          <h5>Janrlar</h5>
+          <div class="genres" id="janrList"></div>
         </div>
-      </div>
-    </div>
 
-    <!-- Quick Filters -->
-    <div id="filtersBar" class="border-t border-zinc-800 bg-zinc-900/70">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex gap-3 overflow-auto scrollbar-thin">
-        <select id="fGenre" class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-          <option value="">Жанр</option><option>Action</option><option>Adventure</option><option>Comedy</option>
-          <option>Drama</option><option>Fantasy</option><option>Romance</option><option>Slice of Life</option>
-          <option>Sci-Fi</option><option>Mystery</option><option>Horror</option><option>Sports</option>
-          <option>Supernatural</option><option>Isekai</option><option>Mecha</option><option>Historical</option><option>Psychological</option>
-        </select>
-        <select id="fYear" class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-          <option value="">Жылы</option><option>2025</option><option>2024</option><option>2023</option><option>2022</option><option>2021</option>
-        </select>
-        <select id="fFormat" class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-          <option value="">Формат</option><option>TV</option><option>OVA</option><option>ONA</option><option>Movie</option><option>Special</option>
-        </select>
-        <select id="fStatus" class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-          <option value="">Статус</option><option>Жүріп жатыр</option><option>Аяқталған</option>
-        </select>
-        <select id="fEL" class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-          <option value="">EL</option><option>18+ жоқ</option><option>18+</option>
-        </select>
-        <select id="fSort" class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-          <option value="">Сұрыптау</option><option value="rating">Рейтинг</option><option value="views">Көрілім</option><option value="new">Жаңа</option>
-        </select>
-        <button id="resetFilters" class="ml-auto px-3 py-2 text-sm border border-zinc-700 rounded-lg hover:bg-zinc-800">Тазалау</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Hero -->
-  <section class="bg-gradient-to-b from-zinc-900 to-zinc-950 border-b border-zinc-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 grid md:grid-cols-2 gap-8 items-center">
-      <div>
-        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Сүйікті анимеңізді <span class="text-brand">қазақша</span> көріңіз</h1>
-        <p class="mt-4 text-zinc-300">Апталық релиздер, дәл бағалау, ыңғайлы іздеу және таңдаулылар — барлығы бір жерде.</p>
-        <div class="mt-6 flex flex-wrap gap-3">
-          <a href="#trending" class="px-4 py-2 bg-brand rounded-lg text-white font-medium hover:bg-brand-dark">Трендтерді көру</a>
-          <a href="#top-rated" class="px-4 py-2 border border-zinc-700 rounded-lg hover:bg-zinc-800">Ең жоғары рейтинг</a>
+        <div style="margin-top:14px">
+          <h5>Sort</h5>
+          <select id="sortBy">
+            <option value="popular">Ko'p ko'rilgan</option>
+            <option value="rating">Reyting</option>
+            <option value="yangi">Yangi</option>
+          </select>
         </div>
-        <p class="mt-3 text-xs text-zinc-400">Ескерту: 18+ контент болуы мүмкін.</p>
-      </div>
-      <div class="relative">
-        <img alt="Аниме коллаж" class="rounded-xl border border-zinc-800 w-full"
-             src="https://images.unsplash.com/photo-1543589077-47b3b1caad37?q=80&w=1200&auto=format&fit=crop" />
-        <div class="absolute -bottom-3 -right-3 bg-zinc-900/90 border border-zinc-800 rounded-lg px-4 py-2 text-sm">Көрілім: 125.3K • Баға: 4.8/5</div>
-      </div>
-    </div>
-  </section>
+      </aside>
 
-  <!-- Weekly schedule -->
-  <section id="schedule" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h2 class="text-2xl font-bold mb-4">Апталық релиздер</h2>
-    <div class="grid md:grid-cols-7 gap-4">
-      <!-- Days -->
-      <template id="dayTpl">
-        <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-3">
-          <h3 class="font-semibold mb-2"></h3>
-          <div class="space-y-2" data-list></div>
+      <section class="content">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <h2 id="sectionTitle">Tavsiya etilganlar</h2>
+          <div style="color:var(--muted);font-size:14px">Natijalar: <span id="resCount">0</span></div>
         </div>
-      </template>
-    </div>
-  </section>
 
-  <!-- Trending -->
-  <section id="trending" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold">Трендтер (соңғы 7 күн)</h2>
-      <a href="#all-trending" class="text-brand hover:underline text-sm">Барлығын көру</a>
-    </div>
-    <div class="mt-4 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" id="trendGrid"></div>
-  </section>
+        <div class="cards" id="cards"></div>
+      </section>
+    </main>
+  </div>
 
-  <!-- New episodes -->
-  <section id="new" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold">Жаңа қосылған эпизодтар</h2>
-      <a href="#all-new" class="text-brand hover:underline text-sm">Барлығын көру</a>
-    </div>
-    <div class="mt-4 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" id="newGrid"></div>
-  </section>
+  <!-- Modal -->
+  <div class="modal-back" id="modalBack">
+    <div class="modal" role="dialog">
+      <div class="head">
+        <img id="modalPoster" src="" alt="poster" />
+        <div class="info">
+          <h2 id="modalTitle">Title</h2>
+          <div class="meta"><div id="modalStudio">Studio</div><div id="modalYear">2025</div></div>
+          <p id="modalDesc" style="margin-top:10px;color:var(--muted)"></p>
 
-  <!-- Top Rated -->
-  <section id="top-rated" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold">Ең жоғары рейтингтегілер</h2>
-      <a href="#ratings" class="text-brand hover:underline text-sm">Толығырақ</a>
-    </div>
-    <div class="mt-4 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" id="topGrid"></div>
-  </section>
-
-  <!-- Recommended -->
-  <section id="recommended" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold">Ұсынылатындар (тарих/жанр негізінде)</h2>
-    </div>
-    <div class="mt-4 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" id="recGrid"></div>
-  </section>
-
-  <!-- Genres -->
-  <section id="genres" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h2 class="text-2xl font-bold mb-4">Жанрлар</h2>
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="genreGrid"></div>
-  </section>
-
-  <!-- Favorites (placeholder) -->
-  <section id="favorites" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h2 class="text-2xl font-bold mb-3">Таңдаулыларым</h2>
-    <p class="text-zinc-400">Тізім бос</p>
-  </section>
-
-  <!-- Anime detail modal -->
-  <div id="animeModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-      <div class="relative">
-        <img id="mBackdrop" class="w-full h-48 object-cover rounded-t-xl" alt="backdrop" />
-        <button id="modalClose" class="absolute top-3 right-3 bg-black/60 hover:bg-black/80 border border-zinc-700 rounded-full p-2">✕</button>
-      </div>
-      <div class="p-4 md:p-6 grid md:grid-cols-[140px,1fr] gap-4">
-        <img id="mPoster" class="rounded-lg border border-zinc-800 w-36 h-52 object-cover" alt="poster" />
-        <div>
-          <h3 id="mTitle" class="text-xl font-bold"></h3>
-          <p id="mOriginal" class="text-sm text-zinc-400"></p>
-          <div class="mt-2 flex flex-wrap gap-2 text-xs">
-            <span id="mCode" class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700"></span>
-            <span id="mStudio" class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700"></span>
-            <span id="mYear" class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700"></span>
-            <span id="mSeason" class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700"></span>
-            <span id="mFormat" class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700"></span>
-            <span id="mStatus" class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700"></span>
-            <span id="mDuration" class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700"></span>
+          <div style="margin-top:12px">
+            <strong>Baholash:</strong>
+            <div class="stars" id="starsWidget" data-anime-id=""></div>
+            <div style="margin-top:6px;color:var(--muted)" id="avgInfo">O'rtacha: 0 (0 ta)</div>
           </div>
 
-          <!-- Rating block -->
-          <div class="mt-3 flex items-center gap-3">
-            <div id="mStars" class="flex items-center gap-1" aria-label="Бағалау"></div>
-            <span id="mAvg" class="text-sm text-zinc-400"></span>
-            <button id="mFav" class="ml-auto px-3 py-1.5 text-sm border border-zinc-700 rounded-lg hover:bg-zinc-800">Таңдаулыларға қосу</button>
-          </div>
-
-          <p id="mShort" class="mt-3 text-zinc-300"></p>
-          <details class="mt-2">
-            <summary class="cursor-pointer text-sm text-brand">Толық сипаттама</summary>
-            <p id="mFull" class="mt-2 text-zinc-300"></p>
-          </details>
-
-          <!-- Episodes -->
-          <div class="mt-5">
-            <h4 class="font-semibold mb-2">Эпизодтар</h4>
-            <div id="mEpisodes" class="grid sm:grid-cols-2 gap-2"></div>
-          </div>
-
-          <!-- Comments -->
-          <div class="mt-6">
-            <div class="flex items-center justify-between">
-              <h4 class="font-semibold">Пікірлер</h4>
-              <select id="revSort" class="bg-zinc-800 border border-zinc-700 rounded-lg text-sm px-2 py-1.5">
-                <option value="helpful">Ең пайдалы</option>
-                <option value="new">Жаңа</option>
-                <option value="old">Ескі</option>
-              </select>
-            </div>
-            <div id="mReviews" class="mt-2 space-y-3"></div>
-            <form id="reviewForm" class="mt-3">
-              <textarea class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-sm" rows="3" placeholder="Пікір қалдыру"></textarea>
-              <div class="mt-2 flex items-center gap-2">
-                <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" class="accent-brand" /> Спойлер</label>
-                <button class="ml-auto px-3 py-1.5 bg-brand rounded-lg text-sm">Жіберу</button>
-              </div>
-              <p class="text-xs text-zinc-400 mt-1">“Пікіріңіз қабылданды, модерациядан кейін жарияланады.”</p>
-            </form>
-          </div>
-
-          <!-- Actions -->
-          <div class="mt-6 flex flex-wrap gap-2">
-            <a id="mWatch" href="#" class="px-4 py-2 bg-brand rounded-lg">Көру</a>
-            <a id="mDownload" href="#" class="px-4 py-2 border border-zinc-700 rounded-lg">Жүктеу (1080p/720p)</a>
-            <button id="mShare" class="px-4 py-2 border border-zinc-700 rounded-lg">Бөлісу</button>
+          <div style="margin-top:12px">
+            <button class="btn" id="watchBtn">Ko'rish</button>
+            <button class="ghost" id="downloadBtn">Yuklash</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Player page (simple) -->
-  <section id="player" class="hidden max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-      <video id="videoEl" class="w-full rounded-lg border border-zinc-800" controls poster="">
-        <source id="vid1080" src="" type="video/mp4" />
-      </video>
-      <div class="mt-3 flex flex-wrap items-center gap-2">
-        <span class="text-sm text-zinc-400">Сапа:</span>
-        <button data-q="1080p" class="qbtn px-3 py-1.5 bg-zinc-800 rounded-lg border border-zinc-700">1080p</button>
-        <button data-q="720p" class="qbtn px-3 py-1.5 bg-zinc-800 rounded-lg border border-zinc-700">720p</button>
-        <button data-q="480p" class="qbtn px-3 py-1.5 bg-zinc-800 rounded-lg border border-zinc-700">480p</button>
-        <span class="ml-auto text-sm text-zinc-400" id="playerMsg">Буферленуде…</span>
-        <button id="nextEp" class="px-3 py-1.5 border border-zinc-700 rounded-lg">Келесі эпизод</button>
-        <button id="frameShot" class="px-3 py-1.5 border border-zinc-700 rounded-lg">Кадрлық скриншот</button>
-      </div>
+  <!-- Admin modal -->
+  <div class="modal-back" id="adminBack" style="display:none;z-index:60">
+    <div class="modal">
+      <h3>Admin: Anime qo'shish</h3>
+      <form id="adminForm" class="admin-form">
+        <input name="kod" placeholder="Kod (misol: aot-s1)" required />
+        <input name="title" placeholder="Nom" required />
+        <input name="studio" placeholder="Studio" />
+        <input name="year" placeholder="Yil" type="number" />
+        <select name="format"><option>TV</option><option>Movie</option><option>OVA</option></select>
+        <input name="poster" placeholder="Poster URL" />
+        <textarea name="desc" placeholder="To'liq tavsif"></textarea>
+        <button class="btn" type="submit">Saqlash</button>
+        <button class="ghost" type="button" id="adminCancel">Bekor qilish</button>
+      </form>
     </div>
-  </section>
+  </div>
 
-  <!-- Admin: Upload forms -->
-  <section id="admin" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <h2 class="text-2xl font-bold mb-5">Әкімші панелі → Аниме жүктеу</h2>
-    <form id="adminAnime" class="grid md:grid-cols-2 gap-4 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-      <div class="md:col-span-2 grid sm:grid-cols-2 gap-4">
-        <div><label class="text-sm">Атауы*</label><input required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-        <div><label class="text-sm">Түпнұсқа атауы</label><input class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-        <div><label class="text-sm">Код* (мыс: aot-s1)</label><input required pattern="[a-z0-9-]+" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-        <div><label class="text-sm">Студия</label><input class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" placeholder="мыс: MAPPA" /></div>
-        <div><label class="text-sm">Жылы*</label><input required type="number" min="1960" max="2026" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-        <div><label class="text-sm">Маусым</label>
-          <select class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2"><option></option><option>Winter</option><option>Spring</option><option>Summer</option><option>Autumn</option></select>
-        </div>
-        <div><label class="text-sm">Формат*</label>
-          <select required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2"><option></option><option>TV</option><option>OVA</option><option>ONA</option><option>Movie</option><option>Special</option></select>
-        </div>
-        <div><label class="text-sm">Статус</label>
-          <select class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2"><option>Жүріп жатыр</option><option>Аяқталған</option></select>
-        </div>
-        <div><label class="text-sm">Ұзақтығы (мин)</label><input type="number" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-        <div><label class="text-sm">Жанрлар*</label>
-          <select multiple required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 h-28">
-            <option>Action</option><option>Adventure</option><option>Comedy</option><option>Drama</option><option>Fantasy</option><option>Romance</option><option>Slice of Life</option><option>Sci-Fi</option><option>Mystery</option><option>Horror</option><option>Sports</option><option>Supernatural</option><option>Isekai</option><option>Mecha</option><option>Historical</option><option>Psychological</option>
-          </select>
-        </div>
-        <div class="md:col-span-2"><label class="text-sm">Қысқаша сипаттама</label><textarea class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" rows="2"></textarea></div>
-        <div class="md:col-span-2"><label class="text-sm">Толық сипаттама (HTML/Markdown)</label><textarea class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" rows="4"></textarea></div>
-        <div><label class="text-sm">Постер сурет* (jpg/png/webp)</label><input type="url" required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-        <div><label class="text-sm">Фон сурет</label><input type="url" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-        <div><label class="text-sm">Тәктегілер</label><input class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-        <div><label class="text-sm">Ересек контент?</label>
-          <select class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2"><option>Жоқ</option><option>Иә</option></select>
-        </div>
-        <div><label class="text-sm">Бастапқы көрілім</label><input type="number" min="0" value="0" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-      </div>
-      <div class="md:col-span-2 flex gap-2">
-        <button class="px-4 py-2 bg-brand rounded-lg">Сақтау</button>
-        <button type="reset" class="px-4 py-2 border border-zinc-700 rounded-lg">Болдырмау</button>
-      </div>
-    </form>
-
-    <h3 class="text-xl font-semibold mt-10 mb-3">Эпизод жүктеу</h3>
-    <form id="adminEpisode" class="grid md:grid-cols-2 gap-4 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-      <div><label class="text-sm">Аниме*</label><input required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" placeholder="ID немесе атауы" /></div>
-      <div><label class="text-sm">Эпизод №*</label><input required type="number" min="1" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-      <div><label class="text-sm">Атауы</label><input class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-      <div><label class="text-sm">Видео URL* (HLS/DASH/mp4)</label><input required type="url" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-      <div><label class="text-sm">Саб файлдары (vtt/ass)</label><input class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" placeholder='[{"lang":"kk","url":"..."}]' /></div>
-      <div><label class="text-sm">Жүктеу сілтемесі</label><input type="url" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-      <div><label class="text-sm">Сапалар</label><input class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" placeholder='["1080p","720p","480p"]' /></div>
-      <div><label class="text-sm">Ұзақтығы (сек)</label><input type="number" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-      <div><label class="text-sm">Шыққан күні</label><input type="date" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2" /></div>
-      <div class="md:col-span-2 flex gap-2">
-        <button class="px-4 py-2 bg-brand rounded-lg">Сақтау</button>
-        <button type="reset" class="px-4 py-2 border border-zinc-700 rounded-lg">Болдырмау</button>
-      </div>
-    </form>
-  </section>
-
-  <!-- Profile (placeholder) -->
-  <section id="profile" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h2 class="text-2xl font-bold">Профиль</h2>
-    <div class="mt-4 grid md:grid-cols-2 gap-4">
-      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-        <h3 class="font-semibold mb-2">Көрген тарихым</h3>
-        <p class="text-zinc-400 text-sm">Тізім бос</p>
-      </div>
-      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-        <h3 class="font-semibold mb-2">Параметрлер</h3>
-        <label class="text-sm">Тіл</label>
-        <select class="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-2 mt-1"><option>Қазақша</option><option>Рус</option><option>Eng</option></select>
-        <button class="mt-3 px-3 py-1.5 bg-brand rounded-lg text-sm">Сақтау</button>
-        <p class="text-xs text-zinc-400 mt-2">Сәтті сақталды</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Toasts -->
-  <div id="toast" class="fixed bottom-4 right-4 hidden px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm shadow-lg">Сақталды!</div>
-
-  <footer class="border-t border-zinc-800 mt-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-sm text-zinc-400">
-      © <span id="y"></span> AnilordTV. Барлық құқықтар қорғалған.
-    </div>
-  </footer>
-
-  <!-- Templates -->
-  <template id="cardTpl">
-    <article class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition">
-      <div class="relative">
-        <img class="w-full h-44 object-cover" alt="poster">
-        <div class="absolute left-2 top-2 text-xs px-2 py-1 rounded bg-black/60 border border-zinc-700">Жалғасуда</div>
-        <div class="absolute right-2 bottom-2 text-xs px-2 py-1 rounded bg-black/60 border border-zinc-700">Баға: 4.8/5</div>
-      </div>
-      <div class="p-3">
-        <h3 class="font-semibold line-clamp-2"></h3>
-        <p class="text-xs text-zinc-400 mt-1">Көрілім: 125.3K</p>
-        <div class="mt-3 flex gap-2">
-          <button class="px-3 py-1.5 bg-brand rounded-lg text-sm">Көру</button>
-          <button class="px-3 py-1.5 border border-zinc-700 rounded-lg text-sm">Ашу</button>
-        </div>
-      </div>
-    </article>
-  </template>
-
-  <template id="epTpl">
-    <a class="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-lg p-2 hover:bg-zinc-800">
-      <div class="w-28 h-16 bg-zinc-800 rounded"></div>
-      <div class="flex-1">
-        <div class="text-sm font-medium"></div>
-        <div class="text-xs text-zinc-400">22 мин • 1080p</div>
-      </div>
-      <span class="text-xs px-2 py-1 rounded bg-black/60 border border-zinc-700">Жаңа эпизод</span>
-    </a>
-  </template>
-
-  <!-- Mock data + JS -->
   <script>
-    const YEAR = new Date().getFullYear();
-    document.getElementById('y').textContent = YEAR;
-
-    // ------------ MOCK DATA (server/API орнына әзірге) ------------
-    const ANIME = [
-      { id:1, code:'aot-s1', title:'Attack on Titan S1', title_original:'Shingeki no Kyojin', studio:'WIT', year:2013, season:'Spring', format:'TV', status:'Аяқталған', duration:22, poster:'https://i.imgur.com/8Q6P1dQ.jpeg', backdrop:'https://i.imgur.com/3xa3Q8N.jpeg', genres:['Action','Drama'], short:'Адамзат пен титандар шайқасы.', full:'Толық сипаттама…', rating:4.7, votes:3421, views:1203991, adult:false,
-        episodes:[{n:1,title:'To You, in 2000 Years',q:['1080p','720p'],url:'https://www.w3schools.com/html/mov_bbb.mp4'}],
-        reviews:[{u:'@eri', body:'Керемет ашылу!', up:12, down:1, t:'2024-03-01'}]
-      },
-      { id:2, code:'jjk', title:'Jujutsu Kaisen', title_original:'Jujutsu Kaisen', studio:'MAPPA', year:2020, season:'Autumn', format:'TV', status:'Жүріп жатыр', duration:24, poster:'https://i.imgur.com/0sYkq6C.jpeg', backdrop:'https://i.imgur.com/G8Kx0c7.jpeg', genres:['Action','Supernatural'], short:'Джужуцу сиқыры.', full:'Толық сипаттама…', rating:4.6, votes:2108, views:980221, adult:false,
-        episodes:[{n:1,title:'Ryomen Sukuna',q:['1080p','720p','480p'],url:'https://www.w3schools.com/html/mov_bbb.mp4'}],
-        reviews:[{u:'@max', body:'Сапалы анимация!', up:8, down:0, t:'2024-04-12'}]
-      },
-      { id:3, code:'vos', title:'Violet Evergarden', title_original:'Violet Evergarden', studio:'Kyoto Animation', year:2018, season:'Winter', format:'TV', status:'Аяқталған', duration:24, poster:'https://i.imgur.com/B1yYb2D.jpeg', backdrop:'https://i.imgur.com/0bV8uKZ.jpeg', genres:['Drama','Slice of Life'], short:'Жүрек тебірентер хикая.', full:'Толық сипаттама…', rating:4.9, votes:1502, views:720551, adult:false,
-        episodes:[{n:1,title:'Episode 1',q:['1080p'],url:'https://www.w3schools.com/html/mov_bbb.mp4'}],
-        reviews:[{u:'@aya', body:'Көзге жас алдырады.', up:23, down:2, t:'2023-12-07'}]
-      },
-      { id:4, code:'your-name', title:'Your Name', title_original:'Kimi no Na wa', studio:'CoMix Wave', year:2016, season:'Summer', format:'Movie', status:'Аяқталған', duration:106, poster:'https://i.imgur.com/8eX3fS2.jpeg', backdrop:'https://i.imgur.com/6o0nJ6l.jpeg', genres:['Romance','Fantasy'], short:'Дене ауысу жайлы романтика.', full:'Толық сипаттама…', rating:4.8, votes:5402, views:1520991, adult:false,
-        episodes:[{n:1,title:'Movie',q:['1080p','720p'],url:'https://www.w3schools.com/html/mov_bbb.mp4'}],
-        reviews:[{u:'@nur', body:'Әуені керемет!', up:17, down:1, t:'2022-05-11'}]
-      },
-      { id:5, code:'horimiya', title:'Horimiya', title_original:'Horimiya', studio:'CloverWorks', year:2021, season:'Winter', format:'TV', status:'Аяқталған', duration:23, poster:'https://i.imgur.com/V0ZJZg9.jpeg', backdrop:'https://i.imgur.com/5kXo7bJ.jpeg', genres:['Romance','Slice of Life'], short:'Мектептегі махаббат.', full:'Толық сипаттама…', rating:4.5, votes:999, views:450221, adult:false,
-        episodes:[{n:1,title:'A Tiny Happenstance',q:['1080p','720p'],url:'https://www.w3schools.com/html/mov_bbb.mp4'}],
-        reviews:[]
-      }
+    // --- Uz sample data --- (UI matnlar uzbekcha) 
+    const ANIME_DATA = [
+      {id:1,kod:'aot-s1',title:'Attack on Titan',studio:'MAPPA',year:2013,format:'TV',genres:['Action','Drama'],poster:'https://images.weserv.nl/?url=https://i.imgur.com/8Km9tLL.jpg',rating_avg:4.8,rating_count:3421,views:1203991,desc:'Gigantika bilan kurashuvchi insoniyat hikoyasi.'},
+      {id:2,kod:'spy-x',title:'Spy x Family',studio:'WIT STUDIO',year:2022,format:'TV',genres:['Comedy','Action'],poster:'https://images.weserv.nl/?url=https://i.imgur.com/tGbaZCY.jpg',rating_avg:4.5,rating_count:2120,views:540123,desc:'Sirli agent oilaviy hayotga moslashadi.'},
+      {id:3,kod:'jogja',title:'Sample Movie',studio:'StudioXYZ',year:2024,format:'Movie',genres:['Fantasy'],poster:'https://images.weserv.nl/?url=https://i.imgur.com/2bX3pVb.jpg',rating_avg:4.2,rating_count:890,views:12312,desc:'Kichik namunaviy film.'}
     ];
 
-    const DAYS = ['Дүйсенбі','Сейсенбі','Сәрсенбі','Бейсенбі','Жұма','Сенбі','Жексенбі'];
+    const GENRES = ['Action','Adventure','Comedy','Drama','Fantasy','Romance','Slice of Life','Sci-Fi','Mystery','Horror'];
 
-    // ------------ UI HELPERS ------------
-    const $ = sel => document.querySelector(sel);
-    const $$ = sel => document.querySelectorAll(sel);
+    // DOM refs
+    const cardsEl = document.getElementById('cards');
+    const resCount = document.getElementById('resCount');
+    const janrList = document.getElementById('janrList');
+    const qInput = document.getElementById('qInput');
+    const qBtn = document.getElementById('qBtn');
+    const sectionTitle = document.getElementById('sectionTitle');
+    const modalBack = document.getElementById('modalBack');
+    const adminBack = document.getElementById('adminBack');
 
-    function toast(msg='Сақталды!'){
-      const t = $('#toast');
-      t.textContent = msg;
-      t.classList.remove('hidden');
-      setTimeout(()=>t.classList.add('hidden'), 2000);
+    // Init
+    function init(){
+      renderGenres();
+      renderCards(ANIME_DATA);
+      attachEvents();
     }
 
-    function formatViews(n){
-      return n>1e6 ? (n/1e6).toFixed(1)+'M' : n>1e3 ? (n/1e3).toFixed(1)+'K' : n;
+    function renderGenres(){
+      janrList.innerHTML = '';
+      GENRES.forEach(g=>{
+        const d = document.createElement('div'); d.className='genre'; d.textContent=g; d.dataset.genre=g; d.onclick=()=>filterByGenre(g);
+        janrList.appendChild(d);
+      })
     }
 
-    // ------------ RENDER: schedule ------------
-    (function renderSchedule(){
-      const grid = document.querySelector('#schedule .grid');
-      DAYS.forEach((d,i)=>{
-        const node = document.getElementById('dayTpl').content.cloneNode(true);
-        node.querySelector('h3').textContent = d;
-        const list = node.querySelector('[data-list]');
-        // демо: күні i сәйкес бірнеше тайтл
-        ANIME.filter((a)=> (a.id+i)%3===0).slice(0,3).forEach(a=>{
-          const link = document.createElement('a');
-          link.href="#";
-          link.className="block text-sm text-brand hover:underline";
-          link.textContent = `${a.title} — Эп ${a.episodes[0]?.n ?? 1}`;
-          link.addEventListener('click', (e)=>{e.preventDefault(); openModal(a.id);});
-          list.appendChild(link);
-        });
-        grid.appendChild(node);
-      });
-    })();
-
-    // ------------ RENDER: card grids ------------
-    function createCard(a){
-      const node = document.getElementById('cardTpl').content.cloneNode(true);
-      const img = node.querySelector('img');
-      img.src = a.poster; img.alt = a.title;
-      node.querySelector('h3').textContent = a.title;
-      node.querySelector('.p-3 p.text-xs')?.remove;
-      node.querySelector('p.text-xs').textContent = `Көрілім: ${formatViews(a.views)}`;
-      node.querySelector('.absolute.left-2').textContent = a.status==='Жүріп жатыр'?'Жалғасуда':'Аяқталған';
-      node.querySelector('.absolute.right-2').textContent = `Баға: ${a.rating.toFixed(1)}/5`;
-      const [watchBtn, openBtn] = node.querySelectorAll('button');
-      watchBtn.addEventListener('click', ()=> openPlayer(a.id, 1));
-      openBtn.addEventListener('click', ()=> openModal(a.id));
-      return node;
-    }
-
-    function fillGrid(id, items){
-      const grid = document.getElementById(id);
-      grid.innerHTML = '';
-      items.forEach(a=> grid.appendChild(createCard(a)));
-    }
-
-    fillGrid('trendGrid', [...ANIME].sort((a,b)=>b.views-a.views).slice(0,5));
-    fillGrid('newGrid', [...ANIME].reverse().slice(0,5));
-    fillGrid('topGrid', [...ANIME].sort((a,b)=> b.rating - a.rating).slice(0,5));
-    fillGrid('recGrid', ANIME.filter(a=> a.genres.includes('Action') || a.genres.includes('Romance')).slice(0,5));
-
-    // ------------ Genres ------------
-    (function renderGenres(){
-      const g = ['Action','Adventure','Comedy','Drama','Fantasy','Romance','Slice of Life','Sci-Fi','Mystery','Horror','Sports','Supernatural','Isekai','Mecha','Historical','Psychological'];
-      const grid = document.getElementById('genreGrid');
-      g.forEach(name=>{
-        const card = document.createElement('article');
-        card.className="bg-zinc-900 border border-zinc-800 rounded-xl p-4";
-        const count = ANIME.filter(a=>a.genres.includes(name)).length;
-        card.innerHTML = `
-          <h3 class="font-semibold">${name}</h3>
-          <p class="text-sm text-zinc-400 mt-1">Барлығы ${count} тайтл</p>
-          <button class="mt-3 px-3 py-1.5 bg-brand rounded-lg text-sm">Қарау</button>
+    function renderCards(data){
+      cardsEl.innerHTML='';
+      resCount.textContent = data.length;
+      data.forEach(a=>{
+        const c = document.createElement('div'); c.className='card';
+        c.innerHTML = `
+          <div class="poster" style="background-image:url('${a.poster}')"></div>
+          <h3>${a.title}</h3>
+          <div class="meta"><div>${a.year} • ${a.format}</div><div class="rating">${renderStarsStatic(a.rating_avg)} <span style="margin-left:6px;color:var(--muted);font-size:13px">${a.rating_avg}</span></div></div>
         `;
-        card.querySelector('button').addEventListener('click',()=>{
-          // Жай ғана сүзгіні қолданамыз
-          fillGrid('trendGrid', ANIME.filter(a=>a.genres.includes(name)));
-          location.hash = '#trending';
-        });
-        grid.appendChild(card);
-      });
-    })();
-
-    // ------------ Search + Filters (клиентлік демо) ------------
-    $('#q').addEventListener('input', (e)=>{
-      const t = e.target.value.toLowerCase();
-      const list = ANIME.filter(a =>
-        a.title.toLowerCase().includes(t) ||
-        a.title_original.toLowerCase().includes(t) ||
-        a.code.toLowerCase().includes(t) ||
-        a.studio.toLowerCase().includes(t)
-      );
-      fillGrid('trendGrid', list);
-    });
-
-    $('#resetFilters').addEventListener('click', ()=>{
-      ['#fGenre','#fYear','#fFormat','#fStatus','#fEL','#fSort'].forEach(s=> $(s).value='');
-      fillGrid('trendGrid', [...ANIME].sort((a,b)=>b.views-a.views).slice(0,5));
-    });
-
-    ['#fGenre','#fYear','#fFormat','#fStatus','#fEL','#fSort'].forEach(s=>{
-      $(s).addEventListener('change', applyFilters);
-    });
-
-    function applyFilters(){
-      let list = [...ANIME];
-      const g = $('#fGenre').value;
-      const y = $('#fYear').value;
-      const f = $('#fFormat').value;
-      const st = $('#fStatus').value;
-      const el = $('#fEL').value;
-      const sort = $('#fSort').value;
-
-      if (g) list = list.filter(a=>a.genres.includes(g));
-      if (y) list = list.filter(a=>a.year==y);
-      if (f) list = list.filter(a=>a.format===f);
-      if (st) list = list.filter(a=>a.status===st);
-      if (el) list = list.filter(a=> el==='18+' ? a.adult : !a.adult );
-
-      if (sort==='rating') list.sort((a,b)=> b.rating - a.rating || b.votes - a.votes);
-      if (sort==='views') list.sort((a,b)=> b.views - a.views);
-      if (sort==='new') list = list.reverse();
-
-      fillGrid('trendGrid', list.slice(0,20));
+        c.onclick = ()=>openModal(a.id);
+        cardsEl.appendChild(c);
+      })
     }
 
-    // ------------ Modal (Anime page) ------------
+    function renderStarsStatic(avg){
+      const full = Math.round(avg);
+      let html='';
+      for(let i=1;i<=5;i++){ html += `<span style="color:${i<=full? 'var(--accent)':'var(--muted)'}">★</span>` }
+      return html;
+    }
+
     function openModal(id){
-      const a = ANIME.find(x=>x.id===id);
-      if(!a) return;
-      $('#mBackdrop').src = a.backdrop;
-      $('#mPoster').src = a.poster;
-      $('#mTitle').textContent = a.title;
-      $('#mOriginal').textContent = a.title_original;
-      $('#mCode').textContent = 'Код: '+a.code;
-      $('#mStudio').textContent = 'Студия: '+a.studio;
-      $('#mYear').textContent = 'Жылы: '+a.year;
-      $('#mSeason').textContent = 'Маусым: '+a.season;
-      $('#mFormat').textContent = 'Формат: '+a.format;
-      $('#mStatus').textContent = 'Статус: '+a.status;
-      $('#mDuration').textContent = `Ұзақтығы: ${a.duration} мин/эп`;
-      $('#mShort').textContent = a.short;
-      $('#mFull').textContent = a.full;
-      $('#mAvg').textContent = `Орташа баға: ${a.rating.toFixed(1)}/5 (${a.votes.toLocaleString()} дауыс) • Көрілім: ${a.views.toLocaleString()}`;
-
-      // Episodes
-      const wrap = $('#mEpisodes'); wrap.innerHTML='';
-      a.episodes.forEach(ep=>{
-        const node = document.getElementById('epTpl').content.cloneNode(true);
-        node.querySelector('.text-sm').textContent = `Эп ${ep.n} — ${ep.title||''}`;
-        node.querySelector('a').addEventListener('click', (e)=>{e.preventDefault(); openPlayer(a.id, ep.n);});
-        wrap.appendChild(node);
-      });
-
-      // Reviews
-      const rev = $('#mReviews'); rev.innerHTML='';
-      (a.reviews||[]).forEach(r=>{
-        const item = document.createElement('div');
-        item.className="bg-zinc-900 border border-zinc-800 rounded-lg p-3";
-        item.innerHTML = `<div class="text-sm"><b>${r.u}</b> • <span class="text-zinc-500">${r.t}</span></div>
-        <p class="text-sm mt-1">${r.body}</p>
-        <div class="mt-2 text-xs text-zinc-400">+${r.up} / -${r.down} • <button class="underline">Пайдаланушыға шағымдану</button></div>`;
-        rev.appendChild(item);
-      });
-
-      // Rating stars (one user — one vote via localStorage)
-      renderStars('#mStars', a.id, a.rating, a.votes);
-
-      // Actions
-      $('#mWatch').onclick = ()=> openPlayer(a.id, 1);
-      $('#mDownload').href = a.episodes[0]?.url || '#';
-      $('#mDownload').onclick = (e)=>{ if(!a.episodes[0]?.url){ e.preventDefault(); toast('Қате: бейне қолжетімсіз'); } };
-      $('#mShare').onclick = async ()=>{
-        try{
-          await navigator.share({title:a.title, url: location.href});
-        } catch(e){ navigator.clipboard.writeText(location.href); toast('Сілтеме көшірілді'); }
-      };
-      $('#mFav').onclick = ()=> { toast('Таңдаулыларға қосылды'); };
-
-      // Show
-      $('#animeModal').classList.remove('hidden');
-      $('#animeModal').classList.add('flex');
-    }
-
-    $('#modalClose').addEventListener('click', ()=> {
-      $('#animeModal').classList.add('hidden');
-      $('#animeModal').classList.remove('flex');
-    });
-
-    // ------------ Stars (rating) ------------
-    function renderStars(sel, animeId, avg, votes){
-      const wrap = document.querySelector(sel);
-      wrap.innerHTML='';
-      const myKey = 'rate_'+animeId;
-      const myVote = Number(localStorage.getItem(myKey)) || 0;
-
+      const anime = ANIME_DATA.find(x=>x.id===id);
+      if(!anime) return;
+      document.getElementById('modalPoster').src = anime.poster;
+      document.getElementById('modalTitle').textContent = anime.title;
+      document.getElementById('modalStudio').textContent = anime.studio;
+      document.getElementById('modalYear').textContent = anime.year;
+      document.getElementById('modalDesc').textContent = anime.desc;
+      document.getElementById('avgInfo').textContent = `O'rtacha: ${anime.rating_avg} (${anime.rating_count} ta)`;
+      const starsWidget = document.getElementById('starsWidget');
+      starsWidget.dataset.animeId = anime.id;
+      starsWidget.innerHTML = '';
       for(let i=1;i<=5;i++){
-        const s = document.createElement('button');
-        s.setAttribute('aria-label', `Бағалау: ${i}`);
-        s.className = 'star ' + ((myVote? i<=myVote : i<=Math.round(avg)) ? '' : 'off');
-        s.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
-        s.addEventListener('click', ()=>{
-          localStorage.setItem(myKey, i);
-          toast(`Сіздің бағаңыз: ${i} жұлдыз`);
-          // client-only: визуалды жаңарту
-          renderStars(sel, animeId, avg, votes+1);
-          // Серверге жіберу (нақтыда): POST /ratings { anime_id, stars }
-        });
-        wrap.appendChild(s);
+        const s = document.createElement('span'); s.className='star'; s.textContent='★'; s.dataset.value = i;
+        s.onclick = (e)=>{ e.stopPropagation(); rateAnime(anime.id,i); };
+        starsWidget.appendChild(s);
       }
-      const info = document.getElementById('mAvg');
-      if (info) info.textContent = myVote ? `Сіздің бағаңыз: ${myVote} жұлдыз • Орташа: ${avg.toFixed(1)} (${votes.toLocaleString()} дауыс)` : `Орташа баға: ${avg.toFixed(1)}/5 (${votes.toLocaleString()} дауыс)`;
+      updateStarFill(anime.rating_avg, starsWidget);
+      modalBack.style.display='flex';
     }
 
-    // ------------ Player ------------
-    function openPlayer(animeId, epNum){
-      const a = ANIME.find(x=>x.id===animeId);
+    function updateStarFill(avg, container){
+      const full = Math.round(avg);
+      [...container.children].forEach((ch,idx)=>{
+        ch.classList.toggle('filled', idx<full);
+      })
+    }
+
+    modalBack.onclick = (e)=>{ if(e.target===modalBack) modalBack.style.display='none' }
+
+    // Rate function (client-side only, in production send to API)
+    function rateAnime(animeId, stars){
+      // Simple client-side update: find anime and recompute avg
+      const a = ANIME_DATA.find(x=>x.id===animeId);
       if(!a) return;
-      const ep = a.episodes.find(e=>e.n===epNum) || a.episodes[0];
-      $('#player').classList.remove('hidden');
-      window.scrollTo({top: $('#player').offsetTop-80, behavior:'smooth'});
-      const v = document.getElementById('videoEl');
-      document.getElementById('vid1080').src = ep.url;
-      v.load(); v.play().catch(()=>{});
-      document.getElementById('playerMsg').textContent = 'Ойнау/Пауза';
-      $('#nextEp').onclick = ()=> openPlayer(animeId, epNum+1);
-      $('#frameShot').onclick = ()=> toast('Кадр түсірілді (демо)');
+      // pretend: new average = (avg*count + stars)/(count+1)
+      a.rating_avg = Math.round(((a.rating_avg*a.rating_count + stars)/(a.rating_count+1))*100)/100;
+      a.rating_count += 1;
+      document.getElementById('avgInfo').textContent = `O'rtacha: ${a.rating_avg} (${a.rating_count} ta)`;
+      updateStarFill(a.rating_avg, document.getElementById('starsWidget'));
+      renderCards(filterLogic());
+      alert('Bahongiz qabul qilindi — bu namuna frontend yangilanishi. Backend yo\'qsa serverga POST yuboring.');
     }
 
-    // ------------ Admin forms (demo) ------------
-    document.getElementById('adminAnime').addEventListener('submit', (e)=>{
-      e.preventDefault(); toast('Аниме сақталды!'); // нақтыда: POST /admin/anime
-    });
-    document.getElementById('adminEpisode').addEventListener('submit', (e)=>{
-      e.preventDefault(); toast('Эпизод сақталды!'); // нақтыда: POST /admin/episodes
-    });
+    // Filters and search
+    function filterByGenre(g){
+      const res = ANIME_DATA.filter(a=>a.genres.includes(g));
+      sectionTitle.textContent = `Janr: ${g}`;
+      renderCards(res);
+    }
 
-    // Mobile filters toggle
-    document.getElementById('filtersOpen').addEventListener('click', ()=>{
-      document.getElementById('filtersBar').classList.toggle('hidden');
-    });
+    function attachEvents(){
+      qBtn.onclick = ()=>{
+        const q = qInput.value.trim().toLowerCase();
+        const res = ANIME_DATA.filter(a=> a.title.toLowerCase().includes(q) || (a.kod && a.kod.toLowerCase().includes(q)) || (a.studio && a.studio.toLowerCase().includes(q)) );
+        sectionTitle.textContent = `Qidiruv: ${q}`;
+        renderCards(res);
+      }
+
+      document.getElementById('adminOpen').onclick = ()=>{ adminBack.style.display='flex' };
+      document.getElementById('adminCancel').onclick = ()=>{ adminBack.style.display='none' };
+
+      document.getElementById('adminForm').addEventListener('submit', function(e){
+        e.preventDefault();
+        const fd = new FormData(this);
+        const obj = {};
+        for(const [k,v] of fd.entries()) obj[k]=v;
+        // In production: POST to /api/anime
+        obj.id = ANIME_DATA.length+1; obj.rating_avg=0; obj.rating_count=0; obj.views=0; obj.genres=[];
+        ANIME_DATA.push(obj);
+        adminBack.style.display='none';
+        renderCards(filterLogic());
+        alert('Yangi anime qo\'shildi (bu faqat frontend demo)');
+      });
+
+      // sidebar filters
+      document.getElementById('filterFormat').onchange = ()=>{ renderCards(filterLogic()); }
+      document.getElementById('sortBy').onchange = ()=>{ renderCards(filterLogic()); }
+
+      // menu quick links
+      document.querySelectorAll('.menu a').forEach(a=>{
+        a.onclick = (e)=>{ e.preventDefault(); const f=a.dataset.filter; if(f==='rating'){ sectionTitle.textContent='Eng yuqori reyting'; renderCards(ANIME_DATA.slice().sort((x,y)=>y.rating_avg-x.rating_avg)); } else if(f==='yangi'){ sectionTitle.textContent='Yangi chiqganlar'; renderCards(ANIME_DATA.slice().sort((x,y)=>y.year - x.year)); } else { sectionTitle.textContent='Tavsiya etilganlar'; renderCards(ANIME_DATA); } }
+      })
+    }
+
+    function filterLogic(){
+      let res = ANIME_DATA.slice();
+      const fmt = document.getElementById('filterFormat').value;
+      if(fmt !== 'all') res = res.filter(r=>r.format === fmt);
+      const sort = document.getElementById('sortBy').value;
+      if(sort==='popular') res.sort((a,b)=>b.views - a.views);
+      if(sort==='rating') res.sort((a,b)=>b.rating_avg - a.rating_avg);
+      if(sort==='yangi') res.sort((a,b)=>b.year - a.year);
+      return res;
+    }
+
+    // Init on load
+    init();
   </script>
+
+  <!-- Footer: qisqa eslatma (uz) -->
+  <div style="text-align:center;color:var(--muted);padding:20px">Bu sahifa demo sifatida ishlaydi. Backend va SQL integratsiyasi kerak bo'lsa, menga xabar bering — men API va Postgres skriptlarini ham yozib beraman.</div>
 </body>
-      </html>
+</html>
