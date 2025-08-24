@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Python Online IDE</title>
+  <title>Python IDE</title>
   <style>
     body {
       margin: 0;
@@ -14,23 +14,10 @@
       background: #1e1e1e;
       color: #fff;
     }
-    #editor {
-      flex: 1;
-      border-bottom: 2px solid #333;
-    }
-    #console {
-      height: 30%;
-      background: #111;
-      color: #0f0;
-      padding: 10px;
-      overflow-y: auto;
-      font-family: monospace;
-    }
     #toolbar {
       background: #222;
-      padding: 5px;
+      padding: 5px 10px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
     }
     button {
@@ -45,20 +32,44 @@
     button:hover {
       background: #005f99;
     }
+    #container {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    #editor {
+      flex: 1;
+      min-width: 30%;
+    }
+    #resizer {
+      width: 5px;
+      cursor: col-resize;
+      background: #333;
+    }
+    #console {
+      width: 40%;
+      background: #111;
+      color: #0f0;
+      padding: 10px;
+      overflow-y: auto;
+      font-family: monospace;
+    }
   </style>
-  <!-- Monaco Editor (автотолтыру VS Code сияқты) -->
+  <!-- Monaco Editor -->
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.33.0/min/vs/loader.js"></script>
-  <!-- Skulpt (браузерде Python орындау) -->
+  <!-- Skulpt -->
   <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
 </head>
 <body>
   <div id="toolbar">
-    <span>🐍 Python Online IDE</span>
     <button onclick="runCode()">▶ Run</button>
   </div>
-  <div id="editor"></div>
-  <div id="console"></div>
+  <div id="container">
+    <div id="editor"></div>
+    <div id="resizer"></div>
+    <div id="console"></div>
+  </div>
 
   <script>
     var editor;
@@ -93,6 +104,31 @@
       }).catch(function(err) {
         outf(err.toString());
       });
+    }
+
+    // --- Resizer logic ---
+    const resizer = document.getElementById("resizer");
+    const editorDiv = document.getElementById("editor");
+    const consoleDiv = document.getElementById("console");
+
+    let x = 0;
+    let editorWidth = 0;
+
+    resizer.addEventListener("mousedown", function(e) {
+      x = e.clientX;
+      editorWidth = editorDiv.getBoundingClientRect().width;
+      document.addEventListener("mousemove", resizeEditor);
+      document.addEventListener("mouseup", stopResize);
+    });
+
+    function resizeEditor(e) {
+      const dx = e.clientX - x;
+      editorDiv.style.width = `${editorWidth + dx}px`;
+    }
+
+    function stopResize() {
+      document.removeEventListener("mousemove", resizeEditor);
+      document.removeEventListener("mouseup", stopResize);
     }
   </script>
 </body>
