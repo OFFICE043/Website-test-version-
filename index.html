@@ -2,70 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Python Online</title>
+  <title>Python Online IDE</title>
   <style>
     body {
-      background: #1e1e1e;
-      color: #fff;
-      font-family: monospace;
       margin: 0;
       padding: 0;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      font-family: sans-serif;
+      background: #1e1e1e;
+      color: #fff;
     }
     #editor {
       flex: 1;
-      height: 60%;
+      border-bottom: 2px solid #333;
     }
-    #output {
+    #console {
+      height: 30%;
       background: #111;
+      color: #0f0;
       padding: 10px;
-      height: 40%;
       overflow-y: auto;
-      white-space: pre-wrap;
+      font-family: monospace;
+    }
+    #toolbar {
+      background: #222;
+      padding: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     button {
       background: #007acc;
-      color: white;
       border: none;
-      padding: 10px;
+      color: white;
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 16px;
     }
     button:hover {
       background: #005f99;
     }
   </style>
-  <!-- CodeMirror (автотолтыру, код редактор) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/python/python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/addon/hint/show-hint.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/addon/hint/show-hint.min.css"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/addon/hint/python-hint.min.js"></script>
+  <!-- Monaco Editor (автотолтыру VS Code сияқты) -->
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.33.0/min/vs/loader.js"></script>
   <!-- Skulpt (браузерде Python орындау) -->
   <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
 </head>
 <body>
-  <button onclick="runCode()">▶ Run</button>
+  <div id="toolbar">
+    <span>🐍 Python Online IDE</span>
+    <button onclick="runCode()">▶ Run</button>
+  </div>
   <div id="editor"></div>
-  <div id="output"></div>
+  <div id="console"></div>
 
   <script>
-    // Editor setup
-    var editor = CodeMirror(document.getElementById("editor"), {
-      mode: "python",
-      theme: "default",
-      lineNumbers: true,
-      extraKeys: {"Ctrl-Space": "autocomplete"}
+    var editor;
+    require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.33.0/min/vs' }});
+    require(["vs/editor/editor.main"], function () {
+      editor = monaco.editor.create(document.getElementById('editor'), {
+        value: "print('hi bro')",
+        language: "python",
+        theme: "vs-dark",
+        automaticLayout: true,
+        fontSize: 16,
+      });
     });
-    editor.setValue("print('hi bro')");
 
     function outf(text) {
-      var output = document.getElementById("output");
-      output.innerHTML += text + "\n";
+      document.getElementById("console").innerText += text + "\n";
     }
 
     function builtinRead(x) {
@@ -75,10 +84,10 @@
     }
 
     function runCode() {
-      var output = document.getElementById("output");
-      output.innerHTML = ""; // Clear old output
+      let consoleBox = document.getElementById("console");
+      consoleBox.innerText = "";
       Sk.configure({output:outf, read:builtinRead});
-      var code = editor.getValue();
+      let code = editor.getValue();
       Sk.misceval.asyncToPromise(function() {
         return Sk.importMainWithBody("<stdin>", false, code, true);
       }).catch(function(err) {
