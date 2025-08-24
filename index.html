@@ -38,13 +38,13 @@
       overflow: hidden;
     }
     #editor {
-      flex: 1;
-      min-width: 30%;
+      width: 60%;
+      min-width: 200px;
     }
     #resizer {
       width: 5px;
       cursor: col-resize;
-      background: #333;
+      background: #444;
     }
     #console {
       width: 40%;
@@ -80,7 +80,7 @@
         language: "python",
         theme: "vs-dark",
         automaticLayout: true,
-        fontSize: 16,
+        fontSize: 15,
       });
     });
 
@@ -106,7 +106,7 @@
       });
     }
 
-    // --- Resizer logic ---
+    // Resizer logic
     const resizer = document.getElementById("resizer");
     const editorDiv = document.getElementById("editor");
     const consoleDiv = document.getElementById("console");
