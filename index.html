@@ -1,324 +1,90 @@
-<!doctype html>
-<html lang="uz">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AnilordTV — Anime sayt</title>
+  <meta charset="UTF-8">
+  <title>Python Online</title>
   <style>
-    /* Oddiy reset */
-    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa7bf;--accent:#ffcc00;--glass:rgba(255,255,255,0.04)}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;background:linear-gradient(180deg,#071023 0%, #0b1227 100%);color:#e6eef8}
-    a{text-decoration:none;color:inherit}
-    .container{max-width:1100px;margin:28px auto;padding:16px}
-
-    /* Navbar */
-    .nav{display:flex;align-items:center;gap:12px}
-    .logo{font-weight:800;font-size:20px;color:var(--accent)}
-    .menu{display:flex;gap:10px;margin-left:16px}
-    .menu a{padding:8px 10px;border-radius:8px;color:var(--muted);font-size:14px}
-    .menu a:hover{background:var(--glass);color:#fff}
-    .search{margin-left:auto;display:flex;gap:8px;align-items:center}
-    .search input{padding:8px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit}
-    .user-actions{display:flex;gap:8px;margin-left:12px}
-    .btn{background:var(--accent);color:#071023;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer}
-    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
-
-    /* Layout */
-    .grid{display:grid;grid-template-columns:240px 1fr;gap:18px;margin-top:20px}
-    .sidebar{background:var(--card);padding:14px;border-radius:12px}
-    .content{padding:6px}
-    .genres{display:flex;flex-direction:column;gap:8px}
-    .genre{padding:8px;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
-    .genre:hover{background:var(--glass);color:#fff}
-
-    /* Cards */
-    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:10px;overflow:hidden;padding:10px}
-    .poster{height:280px;background-size:cover;background-position:center;border-radius:8px}
-    .card h3{margin:8px 0 4px;font-size:16px}
-    .meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
-    .rating{display:flex;gap:4px;align-items:center}
-
-    /* Modal */
-    .modal-back{position:fixed;inset:0;background:rgba(2,6,23,0.7);display:none;align-items:center;justify-content:center}
-    .modal{background:#071329;padding:18px;border-radius:12px;max-width:900px;width:95%}
-    .modal .head{display:flex;gap:12px}
-    .modal .head img{width:220px;height:300px;object-fit:cover;border-radius:6px}
-    .modal .info{flex:1}
-    .stars{display:inline-block}
-    .star{cursor:pointer;font-size:20px;color:var(--muted)}
-    .star.filled{color:var(--accent)}
-
-    /* Admin form */
-    .admin-form input,.admin-form select,.admin-form textarea{width:100%;padding:10px;margin-bottom:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit}
-
-    /* Responsive */
-    @media (max-width:880px){.grid{grid-template-columns:1fr}.sidebar{order:2}.search{display:none}.poster{height:200px}.modal .head{flex-direction:column}.modal .head img{width:100%;height:auto}}
+    body {
+      background: #1e1e1e;
+      color: #fff;
+      font-family: monospace;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #editor {
+      flex: 1;
+      height: 60%;
+    }
+    #output {
+      background: #111;
+      padding: 10px;
+      height: 40%;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    button {
+      background: #007acc;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #005f99;
+    }
   </style>
+  <!-- CodeMirror (автотолтыру, код редактор) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/addon/hint/show-hint.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/addon/hint/show-hint.min.css"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/addon/hint/python-hint.min.js"></script>
+  <!-- Skulpt (браузерде Python орындау) -->
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
 </head>
 <body>
-  <div class="container">
-    <header class="nav">
-      <div class="logo">AnilordTV</div>
-      <nav class="menu">
-        <a href="#" data-filter="all">Bosh sahifa</a>
-        <a href="#" data-filter="genres">Janrlar</a>
-        <a href="#" data-filter="rating">Reyting</a>
-        <a href="#" data-filter="yangi">Yangi chiqqanlar</a>
-        <a href="#" data-filter="mylist">Tanlanganlar</a>
-      </nav>
-
-      <div class="search">
-        <input id="qInput" placeholder="Nom, studiya yoki kod bo'yicha qidirish..." />
-        <button class="ghost" id="qBtn">Qidiruv</button>
-      </div>
-
-      <div class="user-actions">
-        <button class="ghost" id="kirishBtn">Kirish / Ro'yxatdan o'tish</button>
-        <button class="btn" id="adminOpen">Admin</button>
-      </div>
-    </header>
-
-    <main class="grid">
-      <aside class="sidebar">
-        <h4>Filtrlash</h4>
-        <div style="margin-top:8px">
-          <label>Format</label>
-          <select id="filterFormat">
-            <option value="all">Barchasi</option>
-            <option value="TV">TV</option>
-            <option value="Movie">Movie</option>
-            <option value="OVA">OVA</option>
-          </select>
-        </div>
-        <div style="margin-top:12px">
-          <h5>Janrlar</h5>
-          <div class="genres" id="janrList"></div>
-        </div>
-
-        <div style="margin-top:14px">
-          <h5>Sort</h5>
-          <select id="sortBy">
-            <option value="popular">Ko'p ko'rilgan</option>
-            <option value="rating">Reyting</option>
-            <option value="yangi">Yangi</option>
-          </select>
-        </div>
-      </aside>
-
-      <section class="content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <h2 id="sectionTitle">Tavsiya etilganlar</h2>
-          <div style="color:var(--muted);font-size:14px">Natijalar: <span id="resCount">0</span></div>
-        </div>
-
-        <div class="cards" id="cards"></div>
-      </section>
-    </main>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal-back" id="modalBack">
-    <div class="modal" role="dialog">
-      <div class="head">
-        <img id="modalPoster" src="" alt="poster" />
-        <div class="info">
-          <h2 id="modalTitle">Title</h2>
-          <div class="meta"><div id="modalStudio">Studio</div><div id="modalYear">2025</div></div>
-          <p id="modalDesc" style="margin-top:10px;color:var(--muted)"></p>
-
-          <div style="margin-top:12px">
-            <strong>Baholash:</strong>
-            <div class="stars" id="starsWidget" data-anime-id=""></div>
-            <div style="margin-top:6px;color:var(--muted)" id="avgInfo">O'rtacha: 0 (0 ta)</div>
-          </div>
-
-          <div style="margin-top:12px">
-            <button class="btn" id="watchBtn">Ko'rish</button>
-            <button class="ghost" id="downloadBtn">Yuklash</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Admin modal -->
-  <div class="modal-back" id="adminBack" style="display:none;z-index:60">
-    <div class="modal">
-      <h3>Admin: Anime qo'shish</h3>
-      <form id="adminForm" class="admin-form">
-        <input name="kod" placeholder="Kod (misol: aot-s1)" required />
-        <input name="title" placeholder="Nom" required />
-        <input name="studio" placeholder="Studio" />
-        <input name="year" placeholder="Yil" type="number" />
-        <select name="format"><option>TV</option><option>Movie</option><option>OVA</option></select>
-        <input name="poster" placeholder="Poster URL" />
-        <textarea name="desc" placeholder="To'liq tavsif"></textarea>
-        <button class="btn" type="submit">Saqlash</button>
-        <button class="ghost" type="button" id="adminCancel">Bekor qilish</button>
-      </form>
-    </div>
-  </div>
+  <button onclick="runCode()">▶ Run</button>
+  <div id="editor"></div>
+  <div id="output"></div>
 
   <script>
-    // --- Uz sample data --- (UI matnlar uzbekcha) 
-    const ANIME_DATA = [
-      {id:1,kod:'aot-s1',title:'Attack on Titan',studio:'MAPPA',year:2013,format:'TV',genres:['Action','Drama'],poster:'https://images.weserv.nl/?url=https://i.imgur.com/8Km9tLL.jpg',rating_avg:4.8,rating_count:3421,views:1203991,desc:'Gigantika bilan kurashuvchi insoniyat hikoyasi.'},
-      {id:2,kod:'spy-x',title:'Spy x Family',studio:'WIT STUDIO',year:2022,format:'TV',genres:['Comedy','Action'],poster:'https://images.weserv.nl/?url=https://i.imgur.com/tGbaZCY.jpg',rating_avg:4.5,rating_count:2120,views:540123,desc:'Sirli agent oilaviy hayotga moslashadi.'},
-      {id:3,kod:'jogja',title:'Sample Movie',studio:'StudioXYZ',year:2024,format:'Movie',genres:['Fantasy'],poster:'https://images.weserv.nl/?url=https://i.imgur.com/2bX3pVb.jpg',rating_avg:4.2,rating_count:890,views:12312,desc:'Kichik namunaviy film.'}
-    ];
+    // Editor setup
+    var editor = CodeMirror(document.getElementById("editor"), {
+      mode: "python",
+      theme: "default",
+      lineNumbers: true,
+      extraKeys: {"Ctrl-Space": "autocomplete"}
+    });
+    editor.setValue("print('hi bro')");
 
-    const GENRES = ['Action','Adventure','Comedy','Drama','Fantasy','Romance','Slice of Life','Sci-Fi','Mystery','Horror'];
-
-    // DOM refs
-    const cardsEl = document.getElementById('cards');
-    const resCount = document.getElementById('resCount');
-    const janrList = document.getElementById('janrList');
-    const qInput = document.getElementById('qInput');
-    const qBtn = document.getElementById('qBtn');
-    const sectionTitle = document.getElementById('sectionTitle');
-    const modalBack = document.getElementById('modalBack');
-    const adminBack = document.getElementById('adminBack');
-
-    // Init
-    function init(){
-      renderGenres();
-      renderCards(ANIME_DATA);
-      attachEvents();
+    function outf(text) {
+      var output = document.getElementById("output");
+      output.innerHTML += text + "\n";
     }
 
-    function renderGenres(){
-      janrList.innerHTML = '';
-      GENRES.forEach(g=>{
-        const d = document.createElement('div'); d.className='genre'; d.textContent=g; d.dataset.genre=g; d.onclick=()=>filterByGenre(g);
-        janrList.appendChild(d);
-      })
+    function builtinRead(x) {
+      if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+        throw "File not found: '" + x + "'";
+      return Sk.builtinFiles["files"][x];
     }
 
-    function renderCards(data){
-      cardsEl.innerHTML='';
-      resCount.textContent = data.length;
-      data.forEach(a=>{
-        const c = document.createElement('div'); c.className='card';
-        c.innerHTML = `
-          <div class="poster" style="background-image:url('${a.poster}')"></div>
-          <h3>${a.title}</h3>
-          <div class="meta"><div>${a.year} • ${a.format}</div><div class="rating">${renderStarsStatic(a.rating_avg)} <span style="margin-left:6px;color:var(--muted);font-size:13px">${a.rating_avg}</span></div></div>
-        `;
-        c.onclick = ()=>openModal(a.id);
-        cardsEl.appendChild(c);
-      })
-    }
-
-    function renderStarsStatic(avg){
-      const full = Math.round(avg);
-      let html='';
-      for(let i=1;i<=5;i++){ html += `<span style="color:${i<=full? 'var(--accent)':'var(--muted)'}">★</span>` }
-      return html;
-    }
-
-    function openModal(id){
-      const anime = ANIME_DATA.find(x=>x.id===id);
-      if(!anime) return;
-      document.getElementById('modalPoster').src = anime.poster;
-      document.getElementById('modalTitle').textContent = anime.title;
-      document.getElementById('modalStudio').textContent = anime.studio;
-      document.getElementById('modalYear').textContent = anime.year;
-      document.getElementById('modalDesc').textContent = anime.desc;
-      document.getElementById('avgInfo').textContent = `O'rtacha: ${anime.rating_avg} (${anime.rating_count} ta)`;
-      const starsWidget = document.getElementById('starsWidget');
-      starsWidget.dataset.animeId = anime.id;
-      starsWidget.innerHTML = '';
-      for(let i=1;i<=5;i++){
-        const s = document.createElement('span'); s.className='star'; s.textContent='★'; s.dataset.value = i;
-        s.onclick = (e)=>{ e.stopPropagation(); rateAnime(anime.id,i); };
-        starsWidget.appendChild(s);
-      }
-      updateStarFill(anime.rating_avg, starsWidget);
-      modalBack.style.display='flex';
-    }
-
-    function updateStarFill(avg, container){
-      const full = Math.round(avg);
-      [...container.children].forEach((ch,idx)=>{
-        ch.classList.toggle('filled', idx<full);
-      })
-    }
-
-    modalBack.onclick = (e)=>{ if(e.target===modalBack) modalBack.style.display='none' }
-
-    // Rate function (client-side only, in production send to API)
-    function rateAnime(animeId, stars){
-      // Simple client-side update: find anime and recompute avg
-      const a = ANIME_DATA.find(x=>x.id===animeId);
-      if(!a) return;
-      // pretend: new average = (avg*count + stars)/(count+1)
-      a.rating_avg = Math.round(((a.rating_avg*a.rating_count + stars)/(a.rating_count+1))*100)/100;
-      a.rating_count += 1;
-      document.getElementById('avgInfo').textContent = `O'rtacha: ${a.rating_avg} (${a.rating_count} ta)`;
-      updateStarFill(a.rating_avg, document.getElementById('starsWidget'));
-      renderCards(filterLogic());
-      alert('Bahongiz qabul qilindi — bu namuna frontend yangilanishi. Backend yo\'qsa serverga POST yuboring.');
-    }
-
-    // Filters and search
-    function filterByGenre(g){
-      const res = ANIME_DATA.filter(a=>a.genres.includes(g));
-      sectionTitle.textContent = `Janr: ${g}`;
-      renderCards(res);
-    }
-
-    function attachEvents(){
-      qBtn.onclick = ()=>{
-        const q = qInput.value.trim().toLowerCase();
-        const res = ANIME_DATA.filter(a=> a.title.toLowerCase().includes(q) || (a.kod && a.kod.toLowerCase().includes(q)) || (a.studio && a.studio.toLowerCase().includes(q)) );
-        sectionTitle.textContent = `Qidiruv: ${q}`;
-        renderCards(res);
-      }
-
-      document.getElementById('adminOpen').onclick = ()=>{ adminBack.style.display='flex' };
-      document.getElementById('adminCancel').onclick = ()=>{ adminBack.style.display='none' };
-
-      document.getElementById('adminForm').addEventListener('submit', function(e){
-        e.preventDefault();
-        const fd = new FormData(this);
-        const obj = {};
-        for(const [k,v] of fd.entries()) obj[k]=v;
-        // In production: POST to /api/anime
-        obj.id = ANIME_DATA.length+1; obj.rating_avg=0; obj.rating_count=0; obj.views=0; obj.genres=[];
-        ANIME_DATA.push(obj);
-        adminBack.style.display='none';
-        renderCards(filterLogic());
-        alert('Yangi anime qo\'shildi (bu faqat frontend demo)');
+    function runCode() {
+      var output = document.getElementById("output");
+      output.innerHTML = ""; // Clear old output
+      Sk.configure({output:outf, read:builtinRead});
+      var code = editor.getValue();
+      Sk.misceval.asyncToPromise(function() {
+        return Sk.importMainWithBody("<stdin>", false, code, true);
+      }).catch(function(err) {
+        outf(err.toString());
       });
-
-      // sidebar filters
-      document.getElementById('filterFormat').onchange = ()=>{ renderCards(filterLogic()); }
-      document.getElementById('sortBy').onchange = ()=>{ renderCards(filterLogic()); }
-
-      // menu quick links
-      document.querySelectorAll('.menu a').forEach(a=>{
-        a.onclick = (e)=>{ e.preventDefault(); const f=a.dataset.filter; if(f==='rating'){ sectionTitle.textContent='Eng yuqori reyting'; renderCards(ANIME_DATA.slice().sort((x,y)=>y.rating_avg-x.rating_avg)); } else if(f==='yangi'){ sectionTitle.textContent='Yangi chiqganlar'; renderCards(ANIME_DATA.slice().sort((x,y)=>y.year - x.year)); } else { sectionTitle.textContent='Tavsiya etilganlar'; renderCards(ANIME_DATA); } }
-      })
     }
-
-    function filterLogic(){
-      let res = ANIME_DATA.slice();
-      const fmt = document.getElementById('filterFormat').value;
-      if(fmt !== 'all') res = res.filter(r=>r.format === fmt);
-      const sort = document.getElementById('sortBy').value;
-      if(sort==='popular') res.sort((a,b)=>b.views - a.views);
-      if(sort==='rating') res.sort((a,b)=>b.rating_avg - a.rating_avg);
-      if(sort==='yangi') res.sort((a,b)=>b.year - a.year);
-      return res;
-    }
-
-    // Init on load
-    init();
   </script>
-
-  <!-- Footer: qisqa eslatma (uz) -->
-  <div style="text-align:center;color:var(--muted);padding:20px">Bu sahifa demo sifatida ishlaydi. Backend va SQL integratsiyasi kerak bo'lsa, menga xabar bering — men API va Postgres skriptlarini ham yozib beraman.</div>
 </body>
 </html>
