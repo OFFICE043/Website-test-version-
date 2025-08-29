@@ -1,135 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <title>Python IDE</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      font-family: sans-serif;
-      background: #1e1e1e;
-      color: #fff;
-    }
-    #toolbar {
-      background: #222;
-      padding: 5px 10px;
-      display: flex;
-      align-items: center;
-    }
-    button {
-      background: #007acc;
-      border: none;
-      color: white;
-      padding: 6px 12px;
-      font-size: 14px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #005f99;
-    }
-    #container {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-    }
-    #editor {
-      width: 60%;
-      min-width: 200px;
-    }
-    #resizer {
-      width: 5px;
-      cursor: col-resize;
-      background: #444;
-    }
-    #console {
-      width: 40%;
-      background: #111;
-      color: #0f0;
-      padding: 10px;
-      overflow-y: auto;
-      font-family: monospace;
-    }
-  </style>
-  <!-- Monaco Editor -->
-  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.33.0/min/vs/loader.js"></script>
-  <!-- Skulpt -->
-  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime Sayti</title>
+<style>
+body { font-family:'Arial', sans-serif; background:#121212; color:#fff; margin:0; padding:0;}
+header { background:#1f1f1f; padding:20px; text-align:center; font-size:24px; font-weight:bold; }
+.container { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:20px; padding:20px;}
+.card { background:#1e1e1e; border-radius:12px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.5); transition: transform 0.3s;}
+.card:hover { transform: scale(1.05); }
+.card img { width:100%; display:block; }
+.card h3 { text-align:center; padding:10px 0; font-size:18px;}
+.card button { width:90%; margin:0 auto 10px; display:block; padding:8px; border:none; border-radius:6px; background:#ff3d00; color:#fff; cursor:pointer; transition: background 0.3s;}
+.card button:hover { background:#e63900; }
+
+#anime-view { display:none; padding:20px;}
+#anime-view h2 { text-align:center; margin-bottom:10px;}
+#anime-view img { max-width:500px; display:block; margin:0 auto 10px; border-radius:10px;}
+video { display:block; max-width:600px; margin:0 auto 20px; border-radius:10px; background:#000;}
+#comments { margin-top:20px;}
+#comment-list { max-height:200px; overflow-y:auto; margin-bottom:10px;}
+.comment { background:#2a2a2a; margin:5px 0; padding:8px; border-radius:8px; }
+#comment-input { width:70%; padding:8px; border-radius:6px; border:none; margin-right:5px; }
+#add-comment { padding:8px 12px; border:none; border-radius:6px; background:#ff3d00; color:#fff; cursor:pointer;}
+#back { margin-top:20px; padding:10px 20px; background:#555; border:none; border-radius:8px; cursor:pointer; display:block; margin-left:auto; margin-right:auto;}
+#back:hover { background:#777;}
+</style>
 </head>
 <body>
-  <div id="toolbar">
-    <button onclick="runCode()">▶ Run</button>
+<header>Anime Sayti</header>
+
+<div class="container" id="anime-list"></div>
+
+<div id="anime-view">
+  <h2 id="anime-title"></h2>
+  <img id="anime-img" src="" alt="">
+  <video id="anime-video" controls>
+    <source src="" type="video/mp4">
+    Sizning brauzeringiz video tagini qo'llab-quvvatlamaydi.
+  </video>
+  <div id="comments">
+    <h3>Kommentariylar</h3>
+    <div id="comment-list"></div>
+    <input type="text" id="comment-input" placeholder="Kommentariya yozing">
+    <button id="add-comment">Qo'shish</button>
   </div>
-  <div id="container">
-    <div id="editor"></div>
-    <div id="resizer"></div>
-    <div id="console"></div>
-  </div>
+  <button id="back">Orqaga</button>
+</div>
 
-  <script>
-    var editor;
-    require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.33.0/min/vs' }});
-    require(["vs/editor/editor.main"], function () {
-      editor = monaco.editor.create(document.getElementById('editor'), {
-        value: "print('hi bro')",
-        language: "python",
-        theme: "vs-dark",
-        automaticLayout: true,
-        fontSize: 15,
-      });
-    });
+<script>
+// Аниме мәліметтері
+const animeData = [
+  {id:1, title:"Naruto", img:"https://upload.wikimedia.org/wikipedia/en/9/94/NarutoCoverTankobon1.jpg", video:"https://www.w3schools.com/html/mov_bbb.mp4", comments:[]},
+  {id:2, title:"One Piece", img:"https://upload.wikimedia.org/wikipedia/en/6/65/OnePiece62Cover.png", video:"https://www.w3schools.com/html/movie.mp4", comments:[]},
+  {id:3, title:"Attack on Titan", img:"https://upload.wikimedia.org/wikipedia/en/7/79/Attack_on_Titan_manga_volume_1.jpg", video:"https://www.w3schools.com/html/mov_bbb.mp4", comments:[]}
+];
 
-    function outf(text) {
-      document.getElementById("console").innerText += text + "\n";
+const animeList = document.getElementById('anime-list');
+const animeView = document.getElementById('anime-view');
+const animeTitle = document.getElementById('anime-title');
+const animeImg = document.getElementById('anime-img');
+const animeVideo = document.getElementById('anime-video');
+const commentList = document.getElementById('comment-list');
+const commentInput = document.getElementById('comment-input');
+const addCommentBtn = document.getElementById('add-comment');
+const backBtn = document.getElementById('back');
+
+function showAnimeList(){
+  animeList.style.display = 'grid';
+  animeView.style.display = 'none';
+  animeList.innerHTML = '';
+  animeData.forEach(a=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<img src="${a.img}" alt="${a.title}"><h3>${a.title}</h3><button onclick="viewAnime(${a.id})">Ko'rish</button>`;
+    animeList.appendChild(card);
+  });
+}
+
+function viewAnime(id){
+  const anime = animeData.find(a=>a.id===id);
+  animeList.style.display='none';
+  animeView.style.display='block';
+  animeTitle.innerText = anime.title;
+  animeImg.src = anime.img;
+  animeVideo.querySelector('source').src = anime.video;
+  animeVideo.load();
+  updateComments(anime);
+  addCommentBtn.onclick = ()=>{
+    if(commentInput.value.trim()!==''){
+      anime.comments.push(commentInput.value.trim());
+      saveComments();
+      commentInput.value='';
+      updateComments(anime);
     }
+  }
+}
 
-    function builtinRead(x) {
-      if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-        throw "File not found: '" + x + "'";
-      return Sk.builtinFiles["files"][x];
-    }
+function updateComments(anime){
+  commentList.innerHTML='';
+  anime.comments.forEach(c=>{
+    const div = document.createElement('div');
+    div.className='comment';
+    div.innerText = c;
+    commentList.appendChild(div);
+  });
+}
 
-    function runCode() {
-      let consoleBox = document.getElementById("console");
-      consoleBox.innerText = "";
-      Sk.configure({output:outf, read:builtinRead});
-      let code = editor.getValue();
-      Sk.misceval.asyncToPromise(function() {
-        return Sk.importMainWithBody("<stdin>", false, code, true);
-      }).catch(function(err) {
-        outf(err.toString());
-      });
-    }
+backBtn.onclick = showAnimeList;
 
-    // Resizer logic
-    const resizer = document.getElementById("resizer");
-    const editorDiv = document.getElementById("editor");
-    const consoleDiv = document.getElementById("console");
+function saveComments(){
+  localStorage.setItem('animeComments', JSON.stringify(animeData.map(a=>a.comments)));
+}
 
-    let x = 0;
-    let editorWidth = 0;
+window.onload = ()=>{
+  const saved = JSON.parse(localStorage.getItem('animeComments'));
+  if(saved){
+    animeData.forEach((a,i)=>{ a.comments = saved[i] || []; });
+  }
+  showAnimeList();
+}
+</script>
 
-    resizer.addEventListener("mousedown", function(e) {
-      x = e.clientX;
-      editorWidth = editorDiv.getBoundingClientRect().width;
-      document.addEventListener("mousemove", resizeEditor);
-      document.addEventListener("mouseup", stopResize);
-    });
-
-    function resizeEditor(e) {
-      const dx = e.clientX - x;
-      editorDiv.style.width = `${editorWidth + dx}px`;
-    }
-
-    function stopResize() {
-      document.removeEventListener("mousemove", resizeEditor);
-      document.removeEventListener("mouseup", stopResize);
-    }
-  </script>
 </body>
 </html>
