@@ -1,67 +1,13 @@
-<!-- Код ұзақ, бірақ толық функционалды admin панелі қосылды -->
 <!DOCTYPE html>
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anime Sayti - Admin</title>
-<style>
-/* Стильдер бұрынғыдай, үстіне admin панель стилдері қосылды */
-:root {
-  --bg-color: #121212;
-  --text-color: #fff;
-  --card-bg: #1e1e1e;
-  --btn-bg: #ff3d00;
-  --btn-hover: #e63900;
-}
-body { font-family:'Arial', sans-serif; background:var(--bg-color); color:var(--text-color); margin:0; padding:0;}
-header { background:#1f1f1f; padding:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;}
-header h1 { margin:0; font-size:24px; }
-header .controls { display:flex; gap:10px; flex-wrap:wrap;}
-header input { padding:6px; border-radius:6px; border:none; width:180px;}
-header button { padding:6px 12px; border:none; border-radius:6px; cursor:pointer; background:var(--btn-bg); color:#fff;}
-header button:hover { background:var(--btn-hover);}
-.genre-filter { display:flex; gap:10px; padding:10px 20px; flex-wrap:wrap;}
-.genre-filter button { padding:6px 12px; border:none; border-radius:6px; cursor:pointer; background:#555; color:#fff;}
-.genre-filter button.active { background:#ff3d00;}
-.container { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:20px; padding:20px;}
-.card { background:var(--card-bg); border-radius:12px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.5); transition: transform 0.3s; cursor:grab;}
-.card:hover { transform: scale(1.05); }
-.card img { width:100%; display:block; }
-.card h3 { text-align:center; padding:10px 0; font-size:18px;}
-.card p { text-align:center; font-size:14px; color:#ccc; margin:0;}
-.card button { width:90%; margin:0 auto 10px; display:block; padding:8px; border:none; border-radius:6px; background:var(--btn-bg); color:#fff; cursor:pointer; transition: background 0.3s;}
-.card button:hover { background:var(--btn-hover); }
-
-#anime-view { display:none; padding:20px;}
-#anime-view h2 { text-align:center; margin-bottom:10px;}
-#anime-view img { max-width:500px; display:block; margin:0 auto 10px; border-radius:10px;}
-iframe { display:block; width:100%; max-width:600px; height:340px; margin:0 auto 20px; border-radius:10px; }
-#comments { margin-top:20px;}
-#comment-list { max-height:200px; overflow-y:auto; margin-bottom:10px;}
-.comment { background:#2a2a2a; margin:5px 0; padding:8px; border-radius:8px; font-size:14px;}
-.comment span { font-size:12px; color:#aaa; display:block;}
-#comment-input { width:70%; padding:8px; border-radius:6px; border:none; margin-right:5px; }
-#add-comment { padding:8px 12px; border:none; border-radius:6px; background:var(--btn-bg); color:#fff; cursor:pointer;}
-#back { margin-top:20px; padding:10px 20px; background:#555; border:none; border-radius:8px; cursor:pointer; display:block; margin-left:auto; margin-right:auto;}
-#back:hover { background:#777;}
-
-#auth { display:flex; flex-direction:column; align-items:center; justify-content:center; height:80vh; gap:10px;}
-#auth input { padding:8px; border-radius:6px; border:none; width:200px;}
-#auth button { padding:8px 12px; border:none; border-radius:6px; background:var(--btn-bg); color:#fff; cursor:pointer;}
-#auth button:hover { background:var(--btn-hover);}
-
-#admin-panel { display:none; padding:20px; background:#222; margin:10px 20px; border-radius:10px;}
-#admin-panel h3 { margin-top:0;}
-#admin-panel input { padding:6px; margin:5px; border-radius:6px; border:none; width:150px;}
-#admin-panel button { padding:6px 10px; margin:5px; border:none; border-radius:6px; cursor:pointer; background:#ff3d00; color:#fff;}
-#admin-panel button:hover { background:#e63900;}
-
-.dark-mode { --bg-color: #121212; --text-color:#fff; --card-bg:#1e1e1e; --btn-bg:#ff3d00; --btn-hover:#e63900;}
-.light-mode { --bg-color:#f4f4f4; --text-color:#121212; --card-bg:#fff; --btn-bg:#0077ff; --btn-hover:#005bbb;}
-</style>
+<title>Anime Sayti</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="dark-mode">
+<body>
+
 <div id="auth">
   <h2>Kirishingiz yoki ro‘yxatdan o‘ting</h2>
   <input type="text" id="username" placeholder="Foydalanuvchi nomi">
@@ -70,31 +16,18 @@ iframe { display:block; width:100%; max-width:600px; height:340px; margin:0 auto
     <button id="login">Kirish</button>
     <button id="register">Ro‘yxatdan o‘tish</button>
   </div>
-  <p id="auth-msg" style="color:red;"></p>
+  <p id="auth-msg"></p>
 </div>
 
-<header style="display:none;">
+<header>
   <h1>Anime Sayti</h1>
-  <div class="controls">
+  <div>
     <input type="text" id="search" placeholder="Izlash...">
     <button id="toggle-theme">O‘zgartirish</button>
-    <span id="user-display"></span>
   </div>
 </header>
 
-<div id="admin-panel">
-  <h3>Admin Panel</h3>
-  <input type="text" id="new-title" placeholder="Anime nomi">
-  <input type="text" id="new-img" placeholder="Rasm URL">
-  <input type="text" id="new-video" placeholder="Video URL">
-  <input type="text" id="new-genre" placeholder="Janr">
-  <button id="add-anime">Qo‘shish</button>
-  <h4>Mavjud animelar:</h4>
-  <div id="anime-admin-list"></div>
-</div>
-
-<div class="genre-filter" id="genre-filter" style="display:none;"></div>
-<div class="container" id="anime-list" style="display:none;"></div>
+<div class="container" id="anime-list"></div>
 
 <div id="anime-view">
   <h2 id="anime-title"></h2>
@@ -109,23 +42,6 @@ iframe { display:block; width:100%; max-width:600px; height:340px; margin:0 auto
   <button id="back">Orqaga</button>
 </div>
 
-<script>
-// Қолданушы жүйесі
-let currentUser = null;
-function getUsers(){ return JSON.parse(localStorage.getItem('users')||'[]'); }
-function saveUsers(users){ localStorage.setItem('users', JSON.stringify(users)); }
-
-const authDiv = document.getElementById('auth');
-const loginBtn = document.getElementById('login');
-const registerBtn = document.getElementById('register');
-const msg = document.getElementById('auth-msg');
-const usernameInput = document.getElementById('username');
-const passwordInput = document.getElementById('password');
-
-loginBtn.onclick = ()=>{
-  const users = getUsers();
-  const user = users.find(u=>u.username===usernameInput.value && u.password===passwordInput.value);
-  if(user){
-    currentUser = user.username;
-    initApp();
-  } else msg.innerText="Noto‘g‘ri foydalanuvchi
+<script src="script.js"></script>
+</body>
+</html>
