@@ -8,8 +8,9 @@
 </head>
 <body>
 
+<!-- Authentication / Registration -->
 <div id="auth">
-  <h2>Kirishingiz yoki ro‘yxatdan o‘ting</h2>
+  <h2>Kirishingiz yoki Ro‘yxatdan o‘ting</h2>
   <input type="text" id="username" placeholder="Foydalanuvchi nomi">
   <input type="password" id="password" placeholder="Parol">
   <div>
@@ -19,16 +20,16 @@
   <p id="auth-msg"></p>
 </div>
 
+<!-- Main header -->
 <header>
   <h1>Anime Sayti</h1>
-  <div>
-    <input type="text" id="search" placeholder="Izlash...">
-    <button id="toggle-theme">O‘zgartirish</button>
-  </div>
+  <button id="logout">Chiqish</button>
 </header>
 
+<!-- Anime list Grid -->
 <div class="container" id="anime-list"></div>
 
+<!-- Anime view + comments -->
 <div id="anime-view">
   <h2 id="anime-title"></h2>
   <img id="anime-img" src="" alt="">
