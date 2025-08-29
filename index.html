@@ -3,8 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anime Sayti</title>
-<link rel="stylesheet" href="style.css">
+<title>Anime 2025 Sayti</title>
+<style>
+/* General */
+body { margin:0; font-family:Arial,sans-serif; background:#121212; color:#fff; overflow-x:hidden;}
+header { padding:20px; background:#1f1f1f; display:flex; justify-content:space-between; align-items:center; display:none;}
+header h1 { margin:0; font-size:24px;}
+header button { padding:6px 12px; border:none; border-radius:6px; cursor:pointer; background:#ff3d00; color:#fff;}
+header button:hover { background:#e63900; }
+
+/* Auth page */
+#auth { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:10px; background: linear-gradient(-45deg, #ff416c, #ff4b2b, #ffb347, #ffcc33); background-size: 400% 400%; animation: gradientBG 15s ease infinite;}
+@keyframes gradientBG { 0% {background-position:0% 50%;} 50% {background-position:100% 50%;} 100% {background-position:0% 50%;} }
+#auth h2 { color:#fff; text-align:center;}
+#auth input { padding:10px; border-radius:8px; border:none; width:220px;}
+#auth button { padding:10px 15px; border:none; border-radius:8px; background:#fff; color:#ff416c; cursor:pointer; font-weight:bold;}
+#auth button:hover { background:#f0f0f0; }
+#auth-msg { color:#ffcc00; }
+
+/* Sidebar */
+#sidebar { position:fixed; top:80px; left:0; width:180px; padding:20px; background:#1f1f1f; display:none; height:calc(100vh - 80px);}
+#sidebar h3 { margin-top:0; font-size:18px;}
+#sidebar button { display:block; margin:5px 0; padding:8px; width:100%; border:none; border-radius:6px; background:#ff3d00; color:#fff; cursor:pointer; text-align:left;}
+#sidebar button:hover { background:#e63900; }
+
+/* Anime Grid */
+.container { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:20px; padding:20px; margin-left:200px; display:none;}
+.card { background:#1e1e1e; border-radius:12px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s; cursor:pointer;}
+.card:hover { transform: scale(1.05); box-shadow:0 10px 25px rgba(255,61,0,0.7);}
+.card img { width:100%; display:block; height:250px; object-fit:cover;}
+.card h3 { text-align:center; padding:10px 0; margin:0; font-size:18px; }
+.card p { text-align:center; color:#ccc; margin:0 0 10px 0; font-size:14px;}
+.card button { display:block; width:90%; margin:0 auto 10px; padding:8px; border:none; border-radius:6px; background:#ff3d00; color:#fff; cursor:pointer;}
+.card button:hover { background:#e63900; }
+
+/* Anime view */
+#anime-view { display:none; padding:20px; margin-left:200px;}
+#anime-view img { max-width:500px; display:block; margin:0 auto 10px; border-radius:10px;}
+iframe { display:block; width:100%; max-width:600px; height:340px; margin:0 auto 20px; border-radius:10px; }
+#comments { margin-top:20px;}
+#comment-list { max-height:200px; overflow-y:auto; margin-bottom:10px;}
+.comment { background:#2a2a2a; margin:5px 0; padding:8px; border-radius:8px; font-size:14px;}
+#back { margin-top:20px; padding:10px 20px; background:#555; border:none; border-radius:8px; cursor:pointer; display:block; margin-left:auto; margin-right:auto;}
+#back:hover { background:#777; }
+
+/* Responsive */
+@media (max-width:768px){
+  #sidebar { display:none; }
+  .container { margin-left:0; }
+  #anime-view { margin-left:0; }
+}
+</style>
 </head>
 <body>
 
@@ -22,9 +71,18 @@
 
 <!-- Main header -->
 <header>
-  <h1>Anime Sayti</h1>
+  <h1>Anime 2025 Sayti</h1>
   <button id="logout">Chiqish</button>
 </header>
+
+<!-- Sidebar / Genres -->
+<aside id="sidebar">
+  <h3>Janrlar</h3>
+  <button class="genre-btn" data-genre="All">Barchasi</button>
+  <button class="genre-btn" data-genre="Action">Action</button>
+  <button class="genre-btn" data-genre="Adventure">Adventure</button>
+  <button class="genre-btn" data-genre="Fantasy">Fantasy</button>
+</aside>
 
 <!-- Anime list Grid -->
 <div class="container" id="anime-list"></div>
@@ -43,6 +101,140 @@
   <button id="back">Orqaga</button>
 </div>
 
-<script src="script.js"></script>
-</body>
-</html>
+<script>
+// Current user
+let currentUser = localStorage.getItem('currentUser') || null;
+
+// Elements
+const loginBtn = document.getElementById('login');
+const registerBtn = document.getElementById('register');
+const logoutBtn = document.getElementById('logout');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const authMsg = document.getElementById('auth-msg');
+
+const animeList = document.getElementById('anime-list');
+const animeView = document.getElementById('anime-view');
+const animeTitle = document.getElementById('anime-title');
+const animeImg = document.getElementById('anime-img');
+const animeVideo = document.getElementById('anime-video');
+const commentList = document.getElementById('comment-list');
+const commentInput = document.getElementById('comment-input');
+const addCommentBtn = document.getElementById('add-comment');
+const backBtn = document.getElementById('back');
+const sidebar = document.getElementById('sidebar');
+const genreBtns = document.querySelectorAll('.genre-btn');
+
+// Users
+function getUsers(){ return JSON.parse(localStorage.getItem('users')||'[]'); }
+function saveUsers(users){ localStorage.setItem('users', JSON.stringify(users)); }
+
+// Sample anime data
+const animeData = [
+  {id:1, title:"Naruto", img:"https://upload.wikimedia.org/wikipedia/en/9/94/NarutoCoverTankobon1.jpg", video:"https://www.youtube.com/embed/1H9bj7E0wFI", genre:"Action", comments:[]},
+  {id:2, title:"One Piece", img:"https://upload.wikimedia.org/wikipedia/en/6/65/OnePiece62Cover.png", video:"https://www.youtube.com/embed/mQsfI-M5n7s", genre:"Adventure", comments:[]},
+  {id:3, title:"Attack on Titan", img:"https://upload.wikimedia.org/wikipedia/en/7/79/Attack_on_Titan_manga_volume_1.jpg", video:"https://www.youtube.com/embed/MkJDBk7jXo4", genre:"Action", comments:[]},
+  {id:4, title:"Demon Slayer", img:"https://upload.wikimedia.org/wikipedia/en/3/3f/Kimetsu_no_Yaiba_Volume_1.jpg", video:"https://www.youtube.com/embed/2qQfJv0aC_s", genre:"Fantasy", comments:[]},
+  {id:5, title:"Jujutsu Kaisen", img:"https://upload.wikimedia.org/wikipedia/en/0/0b/Jujutsu_Kaisen_Volume_1.png", video:"https://www.youtube.com/embed/wX1nWzOZ33k", genre:"Action", comments:[]}
+];
+
+// Init App
+function initApp(){
+  if(!currentUser){
+    document.getElementById('auth').style.display='flex';
+    document.querySelector('header').style.display='none';
+    animeList.style.display='none';
+    animeView.style.display='none';
+    sidebar.style.display='none';
+  } else {
+    document.getElementById('auth').style.display='none';
+    document.querySelector('header').style.display='flex';
+    sidebar.style.display='block';
+    showAnimeList();
+  }
+}
+
+// Register
+registerBtn.onclick = ()=>{
+  const users = getUsers();
+  if(users.find(u=>u.username===usernameInput.value)){
+    authMsg.innerText="Foydalanuvchi nomi band"; return;
+  }
+  const role = (usernameInput.value==='admin' && passwordInput.value==='1415') ? 'admin' : 'user';
+  users.push({username:usernameInput.value, password:passwordInput.value, role:role});
+  saveUsers(users);
+  localStorage.setItem('currentUser', usernameInput.value);
+  currentUser = usernameInput.value;
+  initApp();
+}
+
+// Login
+loginBtn.onclick = ()=>{
+  const users = getUsers();
+  const user = users.find(u=>u.username===usernameInput.value && u
+
+// Show anime list
+function showAnimeList(filter='All'){
+  animeList.innerHTML='';
+  animeList.style.display='grid';
+  animeView.style.display='none';
+  const data = (filter==='All') ? animeData : animeData.filter(a=>a.genre===filter);
+  data.forEach(a=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML = `
+      <img src="${a.img}" alt="${a.title}">
+      <h3>${a.title}</h3>
+      <p>${a.genre}</p>
+      <button onclick="viewAnime(${a.id})">Ko'rish</button>
+    `;
+    animeList.appendChild(card);
+  });
+}
+
+// View anime
+window.viewAnime = function(id){
+  const anime = animeData.find(a=>a.id===id);
+  animeList.style.display='none';
+  animeView.style.display='block';
+  animeTitle.innerText = anime.title;
+  animeImg.src = anime.img;
+  animeVideo.src = anime.video;
+  updateComments(anime);
+  
+  addCommentBtn.onclick = ()=>{
+    if(commentInput.value.trim()!==''){
+      const timestamp = new Date().toLocaleString();
+      anime.comments.push(commentInput.value.trim() + " ("+timestamp+")");
+      commentInput.value='';
+      updateComments(anime);
+    }
+  }
+}
+
+// Update comments
+function updateComments(anime){
+  commentList.innerHTML='';
+  anime.comments.forEach(c=>{
+    const div = document.createElement('div');
+    div.className='comment';
+    div.innerText = c;
+    commentList.appendChild(div);
+  });
+}
+
+// Back button
+backBtn.onclick = ()=>{
+  animeView.style.display='none';
+  animeList.style.display='grid';
+}
+
+// Genre filter
+genreBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    showAnimeList(btn.dataset.genre);
+  });
+});
+
+// Init
+initApp();
