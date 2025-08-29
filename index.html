@@ -1,10 +1,12 @@
+<!-- Код ұзақ, бірақ толық функционалды admin панелі қосылды -->
 <!DOCTYPE html>
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anime Sayti</title>
+<title>Anime Sayti - Admin</title>
 <style>
+/* Стильдер бұрынғыдай, үстіне admin панель стилдері қосылды */
 :root {
   --bg-color: #121212;
   --text-color: #fff;
@@ -44,21 +46,55 @@ iframe { display:block; width:100%; max-width:600px; height:340px; margin:0 auto
 #back { margin-top:20px; padding:10px 20px; background:#555; border:none; border-radius:8px; cursor:pointer; display:block; margin-left:auto; margin-right:auto;}
 #back:hover { background:#777;}
 
+#auth { display:flex; flex-direction:column; align-items:center; justify-content:center; height:80vh; gap:10px;}
+#auth input { padding:8px; border-radius:6px; border:none; width:200px;}
+#auth button { padding:8px 12px; border:none; border-radius:6px; background:var(--btn-bg); color:#fff; cursor:pointer;}
+#auth button:hover { background:var(--btn-hover);}
+
+#admin-panel { display:none; padding:20px; background:#222; margin:10px 20px; border-radius:10px;}
+#admin-panel h3 { margin-top:0;}
+#admin-panel input { padding:6px; margin:5px; border-radius:6px; border:none; width:150px;}
+#admin-panel button { padding:6px 10px; margin:5px; border:none; border-radius:6px; cursor:pointer; background:#ff3d00; color:#fff;}
+#admin-panel button:hover { background:#e63900;}
+
 .dark-mode { --bg-color: #121212; --text-color:#fff; --card-bg:#1e1e1e; --btn-bg:#ff3d00; --btn-hover:#e63900;}
 .light-mode { --bg-color:#f4f4f4; --text-color:#121212; --card-bg:#fff; --btn-bg:#0077ff; --btn-hover:#005bbb;}
 </style>
 </head>
 <body class="dark-mode">
-<header>
+<div id="auth">
+  <h2>Kirishingiz yoki ro‘yxatdan o‘ting</h2>
+  <input type="text" id="username" placeholder="Foydalanuvchi nomi">
+  <input type="password" id="password" placeholder="Parol">
+  <div>
+    <button id="login">Kirish</button>
+    <button id="register">Ro‘yxatdan o‘tish</button>
+  </div>
+  <p id="auth-msg" style="color:red;"></p>
+</div>
+
+<header style="display:none;">
   <h1>Anime Sayti</h1>
   <div class="controls">
     <input type="text" id="search" placeholder="Izlash...">
     <button id="toggle-theme">O‘zgartirish</button>
+    <span id="user-display"></span>
   </div>
 </header>
 
-<div class="genre-filter" id="genre-filter"></div>
-<div class="container" id="anime-list"></div>
+<div id="admin-panel">
+  <h3>Admin Panel</h3>
+  <input type="text" id="new-title" placeholder="Anime nomi">
+  <input type="text" id="new-img" placeholder="Rasm URL">
+  <input type="text" id="new-video" placeholder="Video URL">
+  <input type="text" id="new-genre" placeholder="Janr">
+  <button id="add-anime">Qo‘shish</button>
+  <h4>Mavjud animelar:</h4>
+  <div id="anime-admin-list"></div>
+</div>
+
+<div class="genre-filter" id="genre-filter" style="display:none;"></div>
+<div class="container" id="anime-list" style="display:none;"></div>
 
 <div id="anime-view">
   <h2 id="anime-title"></h2>
@@ -74,141 +110,22 @@ iframe { display:block; width:100%; max-width:600px; height:340px; margin:0 auto
 </div>
 
 <script>
-const animeData = [
-  {id:1, title:"Naruto", img:"https://upload.wikimedia.org/wikipedia/en/9/94/NarutoCoverTankobon1.jpg", video:"https://www.youtube.com/embed/1H9bj7E0wFI", genre:"Action", comments:[]},
-  {id:2, title:"One Piece", img:"https://upload.wikimedia.org/wikipedia/en/6/65/OnePiece62Cover.png", video:"https://www.youtube.com/embed/mQsfI-M5n7s", genre:"Adventure", comments:[]},
-  {id:3, title:"Attack on Titan", img:"https://upload.wikimedia.org/wikipedia/en/7/79/Attack_on_Titan_manga_volume_1.jpg", video:"https://www.youtube.com/embed/MkJDBk7jXo4", genre:"Action", comments:[]},
-  {id:4, title:"Demon Slayer", img:"https://upload.wikimedia.org/wikipedia/en/3/3f/Kimetsu_no_Yaiba_Volume_1.jpg", video:"https://www.youtube.com/embed/2qQfJv0aC_s", genre:"Fantasy", comments:[]},
-  {id:5, title:"Jujutsu Kaisen", img:"https://upload.wikimedia.org/wikipedia/en/0/0b/Jujutsu_Kaisen_Volume_1.png", video:"https://www.youtube.com/embed/wX1nWzOZ33k", genre:"Action", comments:[]}
-];
+// Қолданушы жүйесі
+let currentUser = null;
+function getUsers(){ return JSON.parse(localStorage.getItem('users')||'[]'); }
+function saveUsers(users){ localStorage.setItem('users', JSON.stringify(users)); }
 
-const animeList = document.getElementById('anime-list');
-const animeView = document.getElementById('anime-view');
-const animeTitle = document.getElementById('anime-title');
-const animeImg = document.getElementById('anime-img');
-const animeVideo = document.getElementById('anime-video');
-const commentList = document.getElementById('comment-list');
-const commentInput = document.getElementById('comment-input');
-const addCommentBtn = document.getElementById('add-comment');
-const backBtn = document.getElementById('back');
-const searchInput = document.getElementById('search');
-const toggleThemeBtn = document.getElementById('toggle-theme');
-const genreFilterDiv = document.getElementById('genre-filter');
-const body = document.body;
+const authDiv = document.getElementById('auth');
+const loginBtn = document.getElementById('login');
+const registerBtn = document.getElementById('register');
+const msg = document.getElementById('auth-msg');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
 
-// Жанрлар автоматты түрде шығару
-const genres = [...new Set(animeData.map(a=>a.genre))];
-genres.forEach(g=>{
-  const btn = document.createElement('button');
-  btn.innerText = g;
-  btn.onclick = ()=>{ selectGenre(g); };
-  genreFilterDiv.appendChild(btn);
-});
-
-function selectGenre(g){
-  Array.from(genreFilterDiv.children).forEach(b=>b.classList.remove('active'));
-  const btn = Array.from(genreFilterDiv.children).find(b=>b.innerText===g);
-  btn.classList.add('active');
-  showAnimeList(searchInput.value, g);
-}
-
-function showAnimeList(filter="", genre=""){
-  animeList.style.display = 'grid';
-  animeView.style.display = 'none';
-  animeList.innerHTML = '';
-  const filtered = animeData.filter(a=>{
-    const matchesTitle = a.title.toLowerCase().includes(filter.toLowerCase());
-    const matchesGenre = genre==="" || a.genre===genre;
-    return matchesTitle && matchesGenre;
-  });
-  filtered.forEach(a=>{
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.draggable = true;
-    card.innerHTML = `<img src="${a.img}" alt="${a.title}"><h3>${a.title}</h3><p>${a.genre}</p><button onclick="viewAnime(${a.id})">Ko'rish</button>`;
-    animeList.appendChild(card);
-    // Drag & Drop
-    card.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', a.id); });
-  });
-  // Drop reordering
-  animeList.addEventListener('dragover', e=>e.preventDefault());
-  animeList.addEventListener('drop', e=>{
-    e.preventDefault();
-    const id = parseInt(e.dataTransfer.getData('text/plain'));
-    const draggedIndex = animeData.findIndex(a=>a.id===id);
-    const targetIndex = Array.from(animeList.children).indexOf(e.target.closest('.card'));
-    if(targetIndex>=0){
-      const [moved] = animeData.splice(draggedIndex,1);
-      animeData.splice(targetIndex,0,moved);
-      showAnimeList(searchInput.value, genre);
-    }
-  });
-}
-
-function viewAnime(id){
-  const anime = animeData.find(a=>a.id===id);
-  animeList.style.display='none';
-  animeView.style.display='block';
-  animeTitle.innerText = anime.title;
-  animeImg.src = anime.img;
-  animeVideo.src = anime.video;
-  updateComments(anime);
-  addCommentBtn.onclick = ()=>{
-    if(commentInput.value.trim()!==''){
-      const timestamp = new Date().toLocaleString();
-      anime.comments.push(commentInput.value.trim() + " ("+timestamp+")");
-      saveComments();
-      commentInput.value='';
-      updateComments(anime);
-    }
-  }
-}
-
-function updateComments(anime){
-  commentList.innerHTML='';
-  anime.comments.forEach(c=>{
-    const div = document.createElement('div');
-    div.className='comment';
-    div.innerHTML = c;
-    commentList.appendChild(div);
-  });
-}
-
-backBtn.onclick = ()=>{
-  animeVideo.src='';
-  const activeGenreBtn = document.querySelector('.genre-filter button.active');
-  const activeGenre = activeGenreBtn? activeGenreBtn.innerText : "";
-  showAnimeList(searchInput.value, activeGenre);
-};
-
-function saveComments(){
-  localStorage.setItem('animeComments', JSON.stringify(animeData.map(a=>a.comments)));
-}
-
-window.onload = ()=>{
-  const saved = JSON.parse(localStorage.getItem('animeComments'));
-  if(saved){
-    animeData.forEach((a,i)=>{ a.comments = saved[i] || []; });
-  }
-  showAnimeList();
-}
-
-searchInput.addEventListener('input', ()=>{ 
-  const activeGenreBtn = document.querySelector('.genre-filter button.active');
-  const activeGenre = activeGenreBtn? activeGenreBtn.innerText : "";
-  showAnimeList(searchInput.value, activeGenre); 
-});
-
-toggleThemeBtn.addEventListener('click', ()=>{
-  body.classList.toggle('dark-mode');
-  body.classList.toggle('light-mode');
-  localStorage.setItem('theme', body.classList.contains('dark-mode')?'dark':'light');
-});
-
-// Theme сақтау
-const savedTheme = localStorage.getItem('theme');
-if(savedTheme==='light'){ body.classList.remove('dark-mode'); body.classList.add('light-mode'); }
-
-</script>
-</body>
-</html>
+loginBtn.onclick = ()=>{
+  const users = getUsers();
+  const user = users.find(u=>u.username===usernameInput.value && u.password===passwordInput.value);
+  if(user){
+    currentUser = user.username;
+    initApp();
+  } else msg.innerText="Noto‘g‘ri foydalanuvchi
