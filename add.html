@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Anime qo'shish</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=103881846', 'ym');
+
+    ym(103881846, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+</head>
+
+<body>
+  <h1>Anime qo'shish</h1>
+  <form id="animeForm">
+    <label>Nomi:<br />
+      <input type="text" id="title" required />
+    </label>
+    <br /><br />
+    <label>Tarif:<br />
+      <textarea id="description" rows="4" required></textarea>
+    </label>
+    <br /><br />
+    <label>Poster:
+      <!-- Скрытый input -->
+      <input type="file" id="cover" class="file-input" accept="image/*" required />
+      <!-- Кастомная кнопка -->
+      <span class="file-label" onclick="document.getElementById('cover').click()">Rasm tanlash</span>
+      <!-- Превью -->
+      <img id="preview" alt="Предпросмотр обложки">
+    </label>
+    <br /><br />
+    <label>Anime kodi:<br />
+      <input type="text" id="code" required />
+    </label>
+    <br /><br />
+    <button type="submit">Yuborish</button>
+    <button type="button" id="cancelBtn">Bekor qilish</button>
+
+  </form>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    const SUPABASE_URL = 'https://aogwtvzevqvpwofcoeee.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvZ3d0dnpldnF2cHdvZmNvZWVlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDg1NDEzNywiZXhwIjoyMDcwNDMwMTM3fQ.-9M2jm2t8RNj1eaY-xC29utlQR-sDLw7utB0OjcaWAs';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+    const coverInput = document.getElementById("cover");
+    const preview = document.getElementById("preview");
+
+    coverInput.addEventListener("change", () => {
+      const file = coverInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.style.display = "none";
+        preview.src = "";
+      }
+    });
+    document.getElementById("cancelBtn").addEventListener("click", () => {
+      if (confirm("Haqiqatan ham bekor qilmoqchimisiz?")) {
+        document.getElementById("animeForm").reset()
+        preview.src = ""
+        preview.style.display = "none"
+      }
+    })
+    document.getElementById("animeForm").addEventListener("submit", async (e) => {
+      e.preventDefault()
+
+      const title = document.getElementById("title").value.trim()
+      const description = document.getElementById("description").value.trim()
+      const code = document.getElementById("code").value.trim()
+      const file = document.getElementById("cover").files[0]
+      
+    const coverInput = document.getElementById("cover");
+    const preview = document.getElementById("preview");
+
+    coverInput.addEventListener("change", () => {
+      const file = coverInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.style.display = "none";
+        preview.src = "";
+      }
+    });
+      if (!file) {
+        alert("Rasmni yuklang!")
+        return
+      }
+
+      // Уникальное имя файла
+      const fileName = `${Date.now()}-${file.name}`
+
+      // Загружаем в Storage
+      const { error: uploadError } = await supabase
+        .storage
+        .from('anime-images') // создай бакет в Supabase с таким именем
+        .upload(fileName, file)
+
+      if (uploadError) {
+        console.error('Poster yuklanmadi:', uploadError)
+        alert('Poster yuklanmadi')
+        return
+      }
+
+      // Получаем публичный URL
+      const { data: publicUrlData } = supabase
+        .storage
+        .from('anime-images')
+        .getPublicUrl(fileName)
+
+      const imageUrl = publicUrlData.publicUrl
+
+      // Сохраняем запись в таблицу anime
+      const { data, error } = await supabase
+        .from('anime')
+        .insert([{ title, description, image_url: imageUrl, code }])
+
+      if (error) {
+        console.error('bazaga yuborishda xatolik:', error)
+        alert('bazaga saqlashda xatolik')
+        return
+      }
+      alert("Saqlandi")
+      e.target.reset()
+    })
+  </script>
+</body>
+
+</html>
